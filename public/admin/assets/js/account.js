@@ -1,3 +1,4 @@
+
 // Login Form
 const loginForm = document.querySelector("#login-form");
 if(loginForm) {
@@ -45,9 +46,29 @@ if(loginForm) {
       const password = event.target.password.value;
       const rememberPassword = event.target.rememberPassword.checked;
 
-      console.log(email);
-      console.log(password);
-      console.log(rememberPassword);
+      const dataFinal = {
+        email: email,
+        password: password,
+        rememberPassword: rememberPassword
+      }
+
+      fetch(`/${pathAdmin}/account/login`, {
+        method:"POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code == "success") {
+          console.log(data.message)
+          window.location.href = `/${pathAdmin}/dashboard`
+        }
+        if(data.code == "error") {
+          alert(data.message)
+        }
+      })
     })
   ;
 }
@@ -137,11 +158,12 @@ if(registerForm) {
       .then(res => res.json())
       .then(data => {
         if(data.code=="success") {
-          console.log("ok")
+          console.log(data.message)
+          window.location.href = `/${pathAdmin}/account/register-initial`
         }
 
         if(data.code=="error") {
-          console.log('error')
+          console.log(data.message)
         }
       })
     })

@@ -1,7 +1,5 @@
 extends ../layouts/account.pug
 
-block title
-  title Đăng nhập
 block main
   .form-account
     h2.inner-title Đăng nhập
@@ -48,4 +46,4 @@ block main
     
     .inner-more
       span Bạn chưa có tài khoản?
-      a(href="#") Tạo tài khoản
+      a(href=`/${pathAdmin}/account/register`) Tạo tài khoản

@@ -5,6 +5,8 @@ const database = require('./config/database.config')
 const variableConfig = require('./config/variable.config')
 const clientRoutes =require('./routes/client/index.route')
 const adminRoutes = require('./routes/admin/index.route')
+const cookieParser = require('cookie-parser')
+
 const app = express();
 
 const port = process.env.PORT;
@@ -15,6 +17,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(express.static(path.join(__dirname, 'public')))
+
+app.use(cookieParser("SOKFJDLDKSFJ"))
 
 app.use(express.json())
 

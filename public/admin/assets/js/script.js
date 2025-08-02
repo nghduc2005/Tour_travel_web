@@ -605,3 +605,38 @@ if(profileChangePasswordForm) {
   ;
 }
 // End Profile Change Password Form
+
+// Sider
+const sider = document.querySelector('.sider')
+  if(sider) {
+    const pathNameCurrent = window.location.pathname
+    const splitPathNameCurrent = pathNameCurrent.split("/");
+    const menuList = sider.querySelectorAll("a");
+    menuList.forEach(item => {
+      const href = item.href;
+      const pathName = new URL(href).pathname;
+      const splitPathName = pathName.split("/");
+      if(splitPathNameCurrent[1] == splitPathName[1] && splitPathNameCurrent[2] == splitPathName[2]) {
+        item.classList.add("active");
+      }
+    })
+  }
+// End Sider
+
+// Logout
+const buttonLogout = document.querySelector('.sider .inner-logout')
+if(buttonLogout) {
+  buttonLogout.addEventListener('click', () => {
+    fetch(`/${pathAdmin}/account/logout`, {
+      method: "POST",
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.code == "success") {
+        console.log(data.message)
+        window.location.href = `/${pathAdmin}/account/login`
+      }
+    })
+  })
+}
+// End Logout
