@@ -63,7 +63,8 @@ if(loginForm) {
       .then(data => {
         if(data.code == "success") {
           console.log(data.message)
-          window.location.href = `/${pathAdmin}/dashboard`
+          console.log(pathAdmin)
+          window.location.href = `/${pathAdmin.trim()}/dashboard`
         }
         if(data.code == "error") {
           alert(data.message)
@@ -189,7 +190,26 @@ if(forgotPasswordForm) {
     ])
     .onSuccess((event) => {
       const email = event.target.email.value;
-      console.log(email);
+      const dataFinal = {
+        email: email
+      }
+      fetch(`/${pathAdmin}/account/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code=="success") {
+          console.log(data.message)
+          window.location.href = `/${pathAdmin}/account/otp-password?email=${email}`
+        }
+        if(data.code == "error") {
+          alert(data.message)
+        }
+      })
     })
   ;
 }
@@ -209,7 +229,29 @@ if(otpPasswordForm) {
     ])
     .onSuccess((event) => {
       const otp = event.target.otp.value;
-      console.log(otp);
+      const urlParams = new URLSearchParams(window.location.search)
+      const email = urlParams.get('email')
+      dataFinal = {
+        otp: otp,
+        email: email
+      }
+      fetch(`/${pathAdmin}/account/otp-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code == "success") {
+          console.log(data.message)
+          window.location.href = `/${pathAdmin}/account/reset-password`
+        }
+        if(data.code == "error") {
+          alert(data.message)
+        }
+      })
     })
   ;
 }
@@ -262,7 +304,26 @@ if(resetPasswordForm) {
     ])
     .onSuccess((event) => {
       const password = event.target.password.value;
-      console.log(password);
+      const dataFinal = {
+        password: password
+      }
+      fetch(`/${pathAdmin}/account/reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code=="success") {
+          console.log(data.message)
+          window.location.href = `/${pathAdmin}/dashboard`
+        }
+        if(data.code=="error") {
+          alert(data.message)
+        }
+      })
     })
   ;
 }
