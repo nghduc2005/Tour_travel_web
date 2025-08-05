@@ -12,6 +12,6 @@ const schema = mongoose.Schema({
   timestamps: true
 })
 
-const AccountAdmin = mongoose.model('AccountAdmin', schema, 'account-admin')
+const AccountAdmin = mongoose.model('AccountAdmin', schema, 'accounts-admin')
 
 module.exports = AccountAdmin
