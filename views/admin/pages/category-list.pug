@@ -9,20 +9,20 @@ block main
       .inner-item.inner-label
         <i class="fa-solid fa-filter"></i> Bộ lọc
       .inner-item
-        select
+        select(filter-status)
           option(value="") Trạng thái
-          option(value="") Hoạt động
-          option(value="") Tạm dừng
+          option(value="active") Hoạt động
+          option(value="inactive") Tạm dừng
       .inner-item
-        select
+        select(filter-created-by)
           option(value="") Người tạo
-          option(value="") Lê Văn A
-          option(value="") Lê Văn B
+          each item in accountAdminList 
+            option(value=item.id) #{item.fullName}
       .inner-item.inner-date
-        input(type="date")
+        input(type="date" filter-start-date)
         span -
-        input(type="date")
-      .inner-item.inner-reset
+        input(type="date" filter-end-date)
+      .inner-item.inner-reset(filter-reset)
         <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
   //- End Section 4
 
@@ -33,9 +33,8 @@ block main
         .inner-item
           select
             option(value="") -- Hành động --
-            option(value="") Hoạt động
-            option(value="") Dừng hoạt động
-            option(value="") Xóa
+            option(value="active") Hoạt động
+            option(value="inactive") Dừng hoạt động
         .inner-item
           button Áp dụng
       .inner-search
@@ -70,7 +69,7 @@ block main
                 img(src=item.avatar class="inner-avatar")
               td(class="inner-center") #{item.position}
               td(class="inner-center")
-                .badge.badge-green Hoạt động
+                .badge.badge-green #{item.status=='active'? 'Hoạt động' : 'Dừng hoạt động'}
               td
                 div #{item.createdByFullName}
                 div.inner-time #{item.createdAtFormat}

@@ -7,6 +7,33 @@ module.exports.list = async (req, res) => {
   const find = {
     deleted: false
   }
+  // Lọc trạng thái
+  if(req.query.status) {
+    find.status = req.query.status
+  }
+  // Hết lọc trạng thái
+
+  // Lọc người tạo
+  if(req.query.createdBy) {
+    find.createdBy = req.query.createdBy
+  }
+  // Hết Lọc người tạo
+
+  // Lọc ngày tạo
+  const dateFilter = {}
+  if(req.query.startDate) {
+    const startDate = moment(req.query.startDate).startOf("date").toDate();
+    dateFilter.$gte = startDate;
+  }
+  if(req.query.endDate) {
+    const endDate = moment(req.query.endDate).endOf('date').toDate()
+    dateFilter.$lte = endDate
+  }
+  if(Object.keys(dateFilter).length > 0) {
+    find.createdAt = dateFilter;
+  }
+  //Hết Lọc ngày tạo
+
   // Phân trang
   const limitItem = 3
   let page = 1
@@ -20,6 +47,9 @@ module.exports.list = async (req, res) => {
   const totalPage = Math.ceil(totalRecord/limitItem)
   if(page>totalPage) {
     page = totalPage
+  }
+  if(page<=0) {
+    page = 1
   }
   const pagination = {
     skip: (page-1)*limitItem,
@@ -51,10 +81,16 @@ module.exports.list = async (req, res) => {
     item.createdAtFormat = moment(item.createdAt).format("HH:mm - DD/MM/YYYY")
     item.updatedAtFormat = moment(item.updatedAt).format("HH:mm - DD/MM/YYYY")
   }
+   // Danh sách tài khoản quản trị
+   const accountAdminList = await AccountAdmin
+   .find({})
+   .select("id fullName");
+ // Hết Danh sách tài khoản quản trị
   res.render('admin/pages/category-list.pug', {
     pageTitle: "Danh sách danh mục",
     categoryList: categoryList,
-    pagination: pagination
+    pagination: pagination,
+    accountAdminList: accountAdminList
   })
 }
 
