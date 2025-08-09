@@ -4,11 +4,36 @@ const Category = require("../../models/category.model")
 const moment = require('moment')
 
 module.exports.list = async (req, res) => {
-  const categoryList = await Category.find({
+  const find = {
     deleted: false
-  }).sort({
+  }
+  // Phân trang
+  const limitItem = 3
+  let page = 1
+  if(req.query.page) {
+    const currentPage = req.query.page
+    if(currentPage > 0) {
+      page = currentPage
+    }
+  }
+  const totalRecord = await Category.countDocuments(find)
+  const totalPage = Math.ceil(totalRecord/limitItem)
+  if(page>totalPage) {
+    page = totalPage
+  }
+  const pagination = {
+    skip: (page-1)*limitItem,
+    totalPage: totalPage,
+    totalRecord: totalRecord
+  }
+  // Kết thúc phân trang
+  const categoryList = await Category
+  .find(find)
+  .sort({
     position: 'desc'
   })
+  .limit(limitItem)
+  .skip(pagination.skip)
 
   for (const item of categoryList) {
     if(item.createdBy) {
@@ -28,7 +53,8 @@ module.exports.list = async (req, res) => {
   }
   res.render('admin/pages/category-list.pug', {
     pageTitle: "Danh sách danh mục",
-    categoryList: categoryList
+    categoryList: categoryList,
+    pagination: pagination
   })
 }
 
@@ -107,6 +133,28 @@ module.exports.editPatch = async (req, res) => {
   } catch (error) {
     res.json({
       code: "error",
+      message: "Id không hợp lệ!"
+    })
+  }
+}
+
+module.exports.deletePatch = async (req, res) => {
+  try {
+    const id = req.params.id
+    await Category.updateOne({
+      _id: id
+    }, {
+      deleted: true,
+      deletedBy: req.account.id,
+      deletedAt: Date.now()
+    })
+    res.json({
+      code: "success",
+      message: "Danh mục đã được đưa vào thùng rác!"
+    })
+  } catch (error) {
+    res.json({
+      code:"error",
       message: "Id không hợp lệ!"
     })
   }

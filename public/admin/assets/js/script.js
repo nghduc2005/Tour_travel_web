@@ -709,3 +709,48 @@ if(buttonLogout) {
   })
 }
 // End Logout
+
+// Button delete
+const listButtonDelete = document.querySelectorAll('[button-delete]')
+if(listButtonDelete.length > 0) {
+  listButtonDelete.forEach((buttonDelete) => {
+    buttonDelete.addEventListener('click', () => {
+      const dataApi = buttonDelete.getAttribute('data-api')
+      fetch(dataApi, {
+        method: "PATCH"
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code=="success") {
+          console.log(data.message)
+          window.location.reload()
+        }
+        if(data.code=='error') {
+          alert(data.message)
+        }
+      })
+    })
+  })
+}
+// End Button delete
+
+// Pagination
+const pagination = document.querySelector('[pagination]')
+if(pagination) {
+  const url = new URL (window.location.href)
+  pagination.addEventListener('change', ()=> {
+    const value = pagination.value
+    if(value) {
+      url.searchParams.set('page', value)      
+    } else {
+      url.searchParams.delete('page')
+    }
+    window.location.href = url.href
+  })
+
+  const valueCurrent = url.searchParams.get('page')
+  if(valueCurrent) {
+    pagination.value = valueCurrent
+  }
+}
+// Pagination
