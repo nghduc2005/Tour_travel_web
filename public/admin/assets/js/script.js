@@ -187,6 +187,61 @@ if(categoryCreateForm) {
 }
 // End Category Create Form
 
+// Category Edit Form
+const categoryEditForm = document.querySelector("#category-edit-form");
+if(categoryEditForm) {
+  const validation = new JustValidate('#category-edit-form');
+
+  validation
+    .addField('#name', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập tên danh mục!'
+      }
+    ])
+    .onSuccess((event) => {
+      const id = event.target.id.value;
+      const name = event.target.name.value;
+      const parent = event.target.parent.value;
+      const position = event.target.position.value;
+      const status = event.target.status.value;
+      const avatars = filePond.avatar.getFiles();
+      let avatar = null;
+      if(avatars.length > 0) {
+        avatar = avatars[0].file;
+        const elementImageDefault = event.target.avatar.closest("[image-default]");
+        const imageDefault = elementImageDefault.getAttribute("image-default");
+        if(imageDefault.includes(avatar.name)) {
+          avatar = null;
+        }
+      }
+      const description = tinymce.get("description").getContent();
+      const formData = new FormData()
+      formData.append('name',name )
+      formData.append('parent', parent)
+      formData.append('position', position)
+      formData.append('status', status)
+      formData.append('avatar', avatar)
+      formData.append('description', description)
+      fetch(`/${pathAdmin}/category/edit/${id}`, {
+        method: "PATCH",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code=="success") {
+          console.log(data.message)
+          window.location.reload()
+        }
+        if(data.code=="error") {
+          alert(data.message)
+        }
+      })
+    })
+  ;
+}
+// End Category Edit Form
+
 // Tour Create Form
 const tourCreateForm = document.querySelector("#tour-create-form");
 if(tourCreateForm) {
