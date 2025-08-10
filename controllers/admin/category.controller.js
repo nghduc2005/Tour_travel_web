@@ -2,6 +2,7 @@ const categoryHelper = require("../../helpers/category.helper")
 const AccountAdmin = require("../../models/account-admin.model")
 const Category = require("../../models/category.model")
 const moment = require('moment')
+const slugify = require('slugify')
 
 module.exports.list = async (req, res) => {
   const find = {
@@ -34,8 +35,18 @@ module.exports.list = async (req, res) => {
   }
   //Hết Lọc ngày tạo
 
+  // Tìm kiếm
+  if(req.query.keyword) {
+    const keyword = slugify(req.query.keyword, {
+      lower: true
+    })
+    const keywordRegex = new RegExp(keyword)
+    find.slug = keywordRegex
+  }
+  // Hết tìm kiếm
+
   // Phân trang
-  const limitItem = 3
+  const limitItem = 5
   let page = 1
   if(req.query.page) {
     const currentPage = req.query.page
@@ -192,6 +203,39 @@ module.exports.deletePatch = async (req, res) => {
     res.json({
       code:"error",
       message: "Id không hợp lệ!"
+    })
+  }
+}
+
+module.exports.changeMultiPatch = async (req, res) => {
+  try {
+    const {option, ids}  = req.body
+    switch (option) {
+      case "active":
+      case "inactive":
+        await Category.updateMany({
+          _id: {$in : ids}
+        }, {
+          status: option
+        })
+        break;
+      case "delete":
+        await Category.updateMany({
+          _id: { $in: ids }
+        }, {
+          deleted: true,
+          deletedBy: req.account.id,
+          deletedAt: Date.now()
+        });
+      break;
+    }
+    res.json({
+      code: "success"
+    })
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không tồn tại trong hệ thông!"
     })
   }
 }
