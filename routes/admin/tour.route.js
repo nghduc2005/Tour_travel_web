@@ -11,4 +11,12 @@ router.post('/create', upload.single('avatar'), tourController.createPost)
 
 router.get('/edit/:id', tourController.edit)
 router.patch('/edit/:id', upload.single('avatar'),tourController.editPatch)
+
+router.patch('/delete/:id', tourController.deletePatch)
+
+router.patch('/change-multi', tourController.changeMultỉPatch)
+
+router.get('/trash', tourController.trash)
+router.patch('/trash/undo/:id', tourController.trashUndoPatch)
+router.delete('/trash/permanent-delete/:id', tourController.trashPermanentDelete)
 module.exports = router

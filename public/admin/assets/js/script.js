@@ -871,6 +871,54 @@ if(listButtonDelete.length > 0) {
 }
 // End Button delete
 
+// Button undo
+const listButtonUndo = document.querySelectorAll('[button-undo]')
+if(listButtonUndo.length > 0) {
+  listButtonUndo.forEach((buttonUndo) => {
+    buttonUndo.addEventListener('click', () => {
+      const dataApi = buttonUndo.getAttribute('data-api')
+      fetch(dataApi, {
+        method: "PATCH"
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code=="success") {
+          console.log(data.message)
+          window.location.reload()
+        }
+        if(data.code=='error') {
+          alert(data.message)
+        }
+      })
+    })
+  })
+}
+// End Button undo
+
+// Button permanent delete
+const listButtonPermanentDelete = document.querySelectorAll('[button-permanent-delete]')
+if(listButtonPermanentDelete.length > 0) {
+  listButtonPermanentDelete.forEach((buttonPermanentDelete) => {
+    buttonPermanentDelete.addEventListener('click', () => {
+      const dataApi = buttonPermanentDelete.getAttribute('data-api')
+      fetch(dataApi, {
+        method: "DELETE"
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code=="success") {
+          console.log(data.message)
+          window.location.reload()
+        }
+        if(data.code=='error') {
+          alert(data.message)
+        }
+      })
+    })
+  })
+}
+// End Button permanent delete
+
 // Pagination
 const pagination = document.querySelector('[pagination]')
 if(pagination) {
@@ -972,6 +1020,45 @@ if(filterEndDate) {
   }
 }
 // End Filter date
+// Filter category
+const filterCategory = document.querySelector('[filter-category]')
+if(filterCategory) {
+  const url = new URL(window.location.href)
+  filterCategory.addEventListener('change', () => {
+    const value = filterCategory.value
+    if(value) {
+      url.searchParams.set('category', value)
+    } else {
+      url.searchParams.delete('category')
+    }
+    window.location.href = url.href
+  })
+
+  const valueCurrent = url.searchParams.get('category')
+  if(valueCurrent) {
+    filterCategory.value = valueCurrent
+  }
+}
+// End filter category
+// Filter price
+const filterPrice = document.querySelector('[filter-price]')
+if(filterPrice) {
+  const url = new URL(window.location.href)
+  filterPrice.addEventListener('change', () => {
+    const value = filterPrice.value
+    if(value) {
+      url.searchParams.set("price", value)
+    } else {
+      url.searchParams.delete('price')
+    }
+    window.location.href = url.href
+  })
+  const valueCurrent = url.searchParams.get('price')
+  if(valueCurrent) {
+    filterPrice.value = valueCurrent
+  }
+}
+// End filter price
 // Reset filter
 const filterReset = document.querySelector('[filter-reset]')
 if(filterReset) {
@@ -1014,7 +1101,6 @@ if(changeMulti) {
         option: option,
         ids: ids
       };
-
       fetch(dataApi, {
         method: "PATCH",
         headers: {

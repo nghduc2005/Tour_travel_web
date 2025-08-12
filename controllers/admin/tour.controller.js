@@ -4,13 +4,89 @@ const Category = require('../../models/category.model')
 const City = require('../../models/city.model')
 const Tour = require('../../models/tour.model')
 const moment = require('moment')
+const slugify = require('slugify')
+const priceList = require('../../config/price.config')
 module.exports.list = async (req, res) => {
   const find = {
     deleted: false
   }
+  // Filter-status
+  if(req.query.status) {
+    find.status = req.query.status
+  }
+  // Hết Filter-status
+  // Filter created by
+  if(req.query.createdBy) {
+    find.createdBy = req.query.createdBy
+  }
+  // Hết filter created by
+  // Filter created date
+  const dateFilter = {}
+  if(req.query.startDate) {
+    const startDate = moment(req.query.startDate).startOf('date ').toDate()
+    dateFilter.$gte = startDate
+  }
+  if(req.query.endDate) {
+    const endDate = moment(req.query.endDate).endOf('date').toDate()
+    dateFilter.$lte = endDate
+  }
+  if(Object.keys(dateFilter).length > 0) {
+    find.createdAt = dateFilter;
+  }
+  // Hết filter created date
+  // Filter category
+  if(req.query.category) {
+    find.category = req.query.category
+  }
+  // Hết Filter category
+  // Filter price
+  if(req.query.price) {
+    const [minimum, maximum] = req.query.price.split('-')
+    const priceRange = {}
+    priceRange.$gte = parseInt(minimum)
+    priceRange.$lte = parseInt(maximum)
+    find.priceNewAdult = priceRange
+  }
+  // Hết filter price
+  // Pagination
+  const limitItem = 1
+  const totalRecord = await Tour.countDocuments({
+    deleted: false
+  })
+  let page = 1
+  if(req.query.page) {
+    const currentPage = parseInt(req.query.page)
+    if(currentPage > 0) {
+      page = currentPage
+    }
+  }
+  const totalPage = Math.ceil(totalRecord/limitItem)
+  if(page> totalPage) {
+    page = totalPage
+  }
+  if(page<=0) {
+    page = 1
+  }
+  const pagination = {
+    skip: (page-1)*limitItem,
+    totalPage: totalPage,
+    totalRecord: totalRecord
+  }
+  // Hết Pagination
+  // Tìm kiếm
+  if(req.query.keyword) {
+    const keyword = slugify(req.query.keyword, {
+      lower: true
+    })
+    const keywordRegex = new RegExp(keyword)
+    find.slug = keywordRegex
+  }
+  // Hết tìm kiếm
   const tourList = await Tour
   .find(find)
   .sort({position: 'desc'})
+  .limit(limitItem)
+  .skip(pagination.skip)
 
   for(const item of tourList) {
     if(item.createdBy) {
@@ -28,9 +104,23 @@ module.exports.list = async (req, res) => {
     item.createdAtFormat = moment(item.createdAt).format('HH:mm - DD/MM/YYYY')
     item.updatedAtFormat = moment(item.updatedAt).format('HH:mm - DD/MM/YYYY')
   }
+
+  const accountAdminList = await AccountAdmin
+  .find({})
+  .select("id fullName")
+
+  const categoryList = await Category
+  .find({})
+  .select("id parent name")
+  const categoryTree = categoryHelper.buildCategoryTree(categoryList)
+
   res.render('admin/pages/tour-list.pug' , {
     pageTitle: "Danh sách tour",
-    tourList: tourList
+    tourList: tourList,
+    accountAdminList: accountAdminList,
+    categoryTree: categoryTree,
+    priceList: priceList,
+    pagination: pagination
   })
 }
 
@@ -145,6 +235,198 @@ module.exports.editPatch = async(req, res) => {
     res.json({
       code:'error',
       message: "Id không hợp lệ!"
+    })
+  }
+}
+
+module.exports.deletePatch = async (req, res) => {
+  try {
+    const id = req.params.id
+    await Tour.updateOne({
+      _id: id
+    }, {
+      deleted: true,
+      deletedBy: req.account.id,
+      deletedAt: Date.now()
+    })
+    res.json({
+      code: "success",
+      message: "Xóa tour thành công!"
+    })
+  } catch (error) {
+    res.json({
+      code:"error",
+      message: "Id không hợp lệ!"
+    })
+  }
+}
+
+module.exports.changeMultỉPatch = async (req, res) => {
+  try {
+    const {option, ids} = req.body
+    switch(option) {
+      case 'active':
+      case 'inactive':
+        await Tour.updateMany({
+          _id: {
+            $in: ids
+          }
+        }, {
+          status: option
+        })
+      break
+      case 'delete':
+        await Tour.updateMany({
+          _id: {
+            $in: ids
+          }
+        }, {
+          deleted: true,
+          deletedBy: req.account.id,
+          deletedAt: Date.now()
+        })
+      break
+      case 'undo':
+        await Tour.updateMany({
+          _id: {
+            $in: ids
+          }
+        }, {
+          updatedBy: req.account.id,
+          deleted: false
+        })
+      case 'permanent-delete':
+        await Tour.deleteMany({
+          _id: {
+            $in: ids
+          },
+          deleted: true
+        })
+      break;
+    }
+    res.json({
+      code: "success",
+    })
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không tồn tại trong hệ thông!"
+    })
+  }
+}
+
+module.exports.trash = async (req, res) => {
+  const find = {
+    deleted: true
+  }
+  // Pagination
+  const limitItem = 1
+  const totalRecord = await Tour.countDocuments({
+    deleted: false
+  })
+  let page = 1
+  if(req.query.page) {
+    const currentPage = parseInt(req.query.page)
+    if(currentPage > 0) {
+      page = currentPage
+    }
+  }
+  const totalPage = Math.ceil(totalRecord/limitItem)
+  if(page> totalPage) {
+    page = totalPage
+  }
+  if(page<=0) {
+    page = 1
+  }
+  const pagination = {
+    skip: (page-1)*limitItem,
+    totalPage: totalPage,
+    totalRecord: totalRecord
+  }
+  // Hết Pagination
+  // Tìm kiếm
+  if(req.query.keyword) {
+    const keyword = slugify(req.query.keyword, {
+      lower: true
+    })
+    const keywordRegex = new RegExp(keyword)
+    find.slug = keywordRegex
+  }
+  // Hết tìm kiếm
+  const tourList = await Tour
+  .find(find)
+  .sort({position: 'desc'})
+  .limit(limitItem)
+  .skip(pagination.skip)
+
+  for(const item of tourList) {
+    if(item.createdBy) {
+      const infoCreatedBy = await AccountAdmin.findOne({
+        _id: item.createdBy
+      })
+      item.createdByFullName = infoCreatedBy.fullName
+    }
+    if(item.deletedBy) {
+      const infoDeletedBy = await AccountAdmin.findOne({
+        _id: item.deletedBy
+      })
+      item.deletedByFullName = infoDeletedBy.fullName
+    }
+    item.createdAtFormat = moment(item.createdAt).format('HH:mm - DD/MM/YYYY')
+    item.deletedAtFormat = moment(item.deletedAt).format('HH:mm - DD/MM/YYYY')
+  }
+
+  const accountAdminList = await AccountAdmin
+  .find({})
+  .select("id fullName")
+
+  const categoryList = await Category
+  .find({})
+  .select("id parent name")
+  const categoryTree = categoryHelper.buildCategoryTree(categoryList)
+
+  res.render('admin/pages/tour-trash.pug' , {
+    pageTitle: "Danh sách tour",
+    tourList: tourList,
+    pagination: pagination
+  })
+}
+
+module.exports.trashUndoPatch = async (req, res) => {
+  try {
+    const id = req.params.id
+    await Tour.updateOne({
+      _id: id
+    }, {
+      deleted: false
+    })
+    res.json({
+      code: "success",
+      message: "Khôi phục tour thành công!"
+    })
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không tồn tại trong hệ thống!"
+    })
+  }
+}
+
+module.exports.trashPermanentDelete = async (req, res) => {
+  try {
+    const id = req.params.id
+    await Tour.deleteOne({
+      _id: id,
+      deleted: true
+    })
+    res.json({
+      code:"success",
+      message: "Xóa vĩnh viễn tour thành công!"
+    })
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Id không tồn tại trong hệ thống!"
     })
   }
 }
