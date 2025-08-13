@@ -545,19 +545,43 @@ if(settingWebsiteInfoForm) {
       let logo = null;
       if(logos.length > 0) {
         logo = logos[0].file;
+        const elementImageDefault = event.target.logo.closest("[image-default]");
+        const imageDefault = elementImageDefault.getAttribute("image-default");
+        if(imageDefault.includes(logo.name)) {
+          logo = null;
+        }
       }
       const favicons = filePond.favicon.getFiles();
       let favicon = null;
       if(favicons.length > 0) {
         favicon = favicons[0].file;
+        const elementImageDefault = event.target.favicon.closest("[image-default]");
+        const imageDefault = elementImageDefault.getAttribute("image-default");
+        if(imageDefault.includes(favicon.name)) {
+          favicon = null;
+        }
       }
+      const formData = new FormData()
+      formData.append("websiteName", websiteName);
+      formData.append("phone", phone);
+      formData.append("email", email);
+      formData.append("address", address);
+      formData.append("logo", logo);
+      formData.append("favicon", favicon);
+      fetch(`/${pathAdmin}/setting/website-info`, {
+        method: "PATCH",
+        body: formData
+      })
+      .then(res => res.json())
+        .then(data => {
+          if(data.code == "error") {
+            alert(data.message);
+          }
 
-      console.log(websiteName);
-      console.log(phone);
-      console.log(email);
-      console.log(address);
-      console.log(logo);
-      console.log(favicon);
+          if(data.code == "success") {
+            window.location.reload();
+          }
+        })
     })
   ;
 }
@@ -748,12 +772,32 @@ if(profileEditForm) {
       let avatar = null;
       if(avatars.length > 0) {
         avatar = avatars[0].file;
+        const elementImageDefault = event.target.avatar.closest("[image-default]");
+        const imageDefault = elementImageDefault.getAttribute("image-default");
+        if(imageDefault.includes(avatar.name)) {
+          avatar = null;
+        }
       }
+      const formData = new FormData()
+      formData.append("fullName", fullName);
+      formData.append("email", email);
+      formData.append("phone", phone);
+      formData.append("avatar", avatar);
+      fetch(`/${pathAdmin}/profile/edit`, {
+        method: 'PATCH',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code == "error") {
+          alert(data.message);
+        }
 
-      console.log(fullName);
-      console.log(email);
-      console.log(phone);
-      console.log(avatar);
+        if(data.code == "success") {
+          console.log('Cập nhật thành công!')
+          window.location.reload();
+        }
+      })
     })
   ;
 }
@@ -806,7 +850,26 @@ if(profileChangePasswordForm) {
     ])
     .onSuccess((event) => {
       const password = event.target.password.value;
-      console.log(password);
+      const dataFinal = {
+        password: password
+      }
+      fetch(`/${pathAdmin}/profile/change-password`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code = "success") {
+          console.log(data.message)
+          window.location.reload()
+        }
+        if(data.code = "error") {
+          alert(data.message)
+        }
+      })
     })
   ;
 }
