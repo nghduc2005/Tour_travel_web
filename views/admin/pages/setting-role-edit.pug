@@ -1,23 +1,25 @@
 extends ../layouts/default.pug
 
-
 block main
-  h1.box-title Tạo nhóm quyền
+  h1.box-title Chỉnh sửa nhóm quyền
 
   .section-8
-    form#setting-role-create-form
+    form#setting-role-edit-form
+      .inner-group(style='display: none')
+        label(class="inner-label" for="id") id
+        input(type="text" id="id" name="id" value=roleDetail.id)
       .inner-group
         label(class="inner-label" for="name") Tên nhóm quyền
-        input(type="text" id="name" name="name")
+        input(type="text" id="name" name="name" value=roleDetail.name)
       .inner-group
         label(class="inner-label" for="description") Mô tả ngắn
-        input(type="text" id="description" name="description")
+        input(type="text" id="description" name="description" value=roleDetail.description)
       .inner-group
         label(class="inner-label") Phân quyền
         .inner-checkbox-list
           each item in permissionList
             .inner-checkbox-item
-              input(type="checkbox" name="permissions" value=item.value)
+              input(type="checkbox" name="permissions" value=item.value checked=roleDetail.permissions.includes(item.value)? true: false)
               label #{item.label}
       .inner-button.inner-two-col
         button Tạo mới

@@ -13,6 +13,18 @@ router.patch('/website-info', upload.fields([
 ), settingController.websiteInfoPatch)
 
 router.get('/account-admin/list', settingController.accountAdmin)
+router.patch('/account-admin/change-multi', settingController.accountAdminChangeMulti)
+router.get('/account-admin/create', settingController.accountAdminCreate)
+router.post('/account-admin/create', upload.single('avatar'), settingController.accountAdminCreatePost)
+router.get('/account-admin/edit/:id', settingController.accountAdminEdit)
+router.patch('/account-admin/edit/:id', upload.single('avatar'),settingController.accountAdminEditPatch)
+
 router.get('/role/list', settingController.roleList)
+router.patch('/role/change-multi', settingController.roleChangeMulti)
+router.get('/role/create', settingController.roleCreate)
+router.get('/role/edit/:id', settingController.roleEdit)
+router.patch('/role/edit/:id', settingController.roleEditPatch)
+router.post('/role/create', settingController.roleCreatePost)
+router.patch('/role/delete/:id', settingController.roleDeletePatch)
 
 module.exports = router
