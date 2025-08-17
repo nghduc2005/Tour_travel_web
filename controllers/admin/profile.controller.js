@@ -1,9 +1,14 @@
 const bcrypt = require('bcryptjs')
 const AccountAdmin = require('../../models/account-admin.model')
+const Role = require('../../models/role.model')
 module.exports.edit = async (req, res) => {
   const accountDetail = await AccountAdmin.findOne({
     _id: req.account.id
   })
+  const roleDetail = await Role.findOne({
+    _id: accountDetail.role
+  })
+  accountDetail.roleName = roleDetail.name
   res.render(`admin/pages/profile-edit.pug`, {
     pageTitle: "Thông tin cá nhân",
     accountDetail: accountDetail
