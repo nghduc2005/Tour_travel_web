@@ -50,9 +50,7 @@ module.exports.list = async (req, res) => {
   // Hết filter price
   // Pagination
   const limitItem = 1
-  const totalRecord = await Tour.countDocuments({
-    deleted: false
-  })
+  const totalRecord = await Tour.countDocuments(find)
   let page = 1
   if(req.query.page) {
     const currentPage = parseInt(req.query.page)
@@ -144,7 +142,11 @@ module.exports.createPost = async(req, res) => {
   } else {
     req.body.position = parseInt(req.body.position)
   }
-  req.body.avatar = req.file ? req.file.path : ""
+  if(req.files && req.files.avatar) {
+    req.body.avatar = req.files.avatar[0].path;
+  } else {
+    delete req.body.avatar;
+  }
   req.body.createdBy = req.account.id
   req.body.updatedBy = req.account.id
 
@@ -161,6 +163,12 @@ module.exports.createPost = async(req, res) => {
   req.body.locations = req.body.locations ? JSON.parse(req.body.locations) : []
   req.body.departureDate = req.body.departureDate ? new Date(req.body.departureDate) : null
   req.body.schedules = req.body.schedules ? JSON.parse(req.body.schedules) : []
+  if(req.files && req.files.images && req.files.images.length > 0) {
+    req.body.images = req.files.images.map(file => file.path);
+  } else {
+    delete req.body.images;
+  }
+
   const newRecord = new Tour(req.body)
   newRecord.save()
   res.json({
@@ -204,8 +212,8 @@ module.exports.editPatch = async(req, res) => {
     }
     req.body.updatedBy = req.account.id
 
-    if(req.file) {
-      req.body.avatar = req.file.path
+    if(req.files && req.files.avatar) {
+      req.body.avatar = req.files.avatar[0].path;
     } else {
       delete req.body.avatar
     }
@@ -223,6 +231,11 @@ module.exports.editPatch = async(req, res) => {
     req.body.departureDate = req.body.departureDate ? new Date(req.body.departureDate) : null;
     req.body.schedules = req.body.locations ? JSON.parse(req.body.schedules) : [];
 
+    if(req.files && req.files.images && req.files.images.length > 0) {
+      req.body.images = req.files.images.map(file => file.path);
+    } else {
+      delete req.body.images;
+    }
     await Tour.updateOne({
       _id: id,
       deleted: false
@@ -321,9 +334,7 @@ module.exports.trash = async (req, res) => {
   }
   // Pagination
   const limitItem = 1
-  const totalRecord = await Tour.countDocuments({
-    deleted: false
-  })
+  const totalRecord = await Tour.countDocuments(find)
   let page = 1
   if(req.query.page) {
     const currentPage = parseInt(req.query.page)

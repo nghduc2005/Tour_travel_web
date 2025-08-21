@@ -7,10 +7,17 @@ const upload = multer({storage: cloudinaryHelper.storage})
 router.get('/list', tourController.list)
 
 router.get('/create', tourController.create)
-router.post('/create', upload.single('avatar'), tourController.createPost)
+router.post('/create', upload.fields([
+  { name: 'avatar', maxCount: 1 },
+  { name: 'images', maxCount: 10 }
+]), tourController.createPost)
 
 router.get('/edit/:id', tourController.edit)
-router.patch('/edit/:id', upload.single('avatar'),tourController.editPatch)
+router.patch('/edit/:id', upload.fields([
+  { name: 'avatar', maxCount: 1 },
+  { name: 'images', maxCount: 10 }
+]),
+tourController.editPatch)
 
 router.patch('/delete/:id', tourController.deletePatch)
 

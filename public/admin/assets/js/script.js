@@ -105,6 +105,36 @@ if(listFilepondImage.length > 0) {
 }
 // End Filepond Image
 
+// Filepond Image Multi
+const listFilepondImageMulti = document.querySelectorAll("[filepond-image-multi]");
+let filePondMulti = {};
+if(listFilepondImageMulti.length > 0) {
+  listFilepondImageMulti.forEach(filepondImage => {
+    FilePond.registerPlugin(FilePondPluginImagePreview);
+    FilePond.registerPlugin(FilePondPluginFileValidateType);
+
+    let files = null;
+    const elementListImageDefault = filepondImage.closest("[list-image-default]");
+    if(elementListImageDefault) {
+      let listImageDefault = elementListImageDefault.getAttribute("list-image-default");
+      if(listImageDefault) {
+        listImageDefault = JSON.parse(listImageDefault);
+        files = [];
+        listImageDefault.forEach(image => {
+          files.push({
+            source: image, // Đường dẫn ảnh
+          });
+        })
+      }
+    }
+
+    filePondMulti[filepondImage.name] = FilePond.create(filepondImage, {
+      labelIdle: '+',
+      files: files,
+    });
+  });
+}
+// End Filepond Image Multi
 
 // Biểu đồ doanh thu
 const revenueChart = document.querySelector("#revenue-chart");
@@ -340,6 +370,15 @@ if(tourCreateForm) {
       formData.append("departureDate", departureDate);
       formData.append("information", information);
       formData.append("schedules", JSON.stringify(schedules));
+
+      // images
+      if(filePondMulti.images.getFiles().length > 0) {
+        filePondMulti.images.getFiles().forEach(item => {
+          formData.append("images", item.file);
+        })
+      }
+      // End images
+
       fetch(`/${pathAdmin}/tour/create`, {
         method: "POST",
         body: formData
@@ -447,6 +486,15 @@ if(tourEditForm) {
       formData.append("departureDate", departureDate);
       formData.append("information", information);
       formData.append("schedules", JSON.stringify(schedules));
+
+      // images
+      if(filePondMulti.images.getFiles().length > 0) {
+        filePondMulti.images.getFiles().forEach(item => {
+          formData.append("images", item.file);
+        })
+      }
+      // End images
+
       fetch(`/${pathAdmin}/tour/edit/${id}`, {
         method: "PATCH",
         body: formData
@@ -500,19 +548,37 @@ if(orderEditForm) {
       },
     ])
     .onSuccess((event) => {
+      const id = event.target.id.value;
       const fullName = event.target.fullName.value;
       const phone = event.target.phone.value;
       const note = event.target.note.value;
       const paymentMethod = event.target.paymentMethod.value;
       const paymentStatus = event.target.paymentStatus.value;
       const status = event.target.status.value;
-
-      console.log(fullName);
-      console.log(phone);
-      console.log(note);
-      console.log(paymentMethod);
-      console.log(paymentStatus);
-      console.log(status);
+      const dataFinal = {
+        fullName: fullName,
+        phone: phone,
+        note:note,
+        paymentMethod:paymentMethod,
+        paymentStatus:paymentStatus,
+        status:status,
+      }
+      fetch(`/${pathAdmin}/order/edit/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data=='success') {
+          window.location.reload()
+        }
+        if(data.code == 'error') {
+          alert(data.message)
+        }
+      })
     })
   ;
 }
@@ -1231,7 +1297,46 @@ if(filterStatus) {
     filterStatus.value = valueCurrent
   }
 }
-
+// End Filter status
+// Filter payment method
+const filterPaymentMethod = document.querySelector('[filter-payment-method]')
+if(filterPaymentMethod) {
+  const url = new URL(window.location.href)
+  filterPaymentMethod.addEventListener('change', () => {
+    const value = filterPaymentMethod.value
+    if(value) {
+      url.searchParams.set('paymentMethod', value)
+    } else {
+      url.searchParams.delete('paymentMethod')
+    }
+    window.location.href = url.href
+  })
+  // Hiển thị mặc định
+  const valueCurrent = url.searchParams.get('paymentMethod')
+  if(valueCurrent) {
+    filterPaymentMethod.value = valueCurrent
+  }
+}
+// End Filter payment method
+// Filter payment status
+const filterPaymentStatus = document.querySelector('[filter-payment-status]')
+if(filterPaymentStatus) {
+  const url = new URL(window.location.href)
+  filterPaymentStatus.addEventListener('change', () => {
+    const value = filterPaymentStatus.value
+    if(value) {
+      url.searchParams.set('paymentStatus', value)
+    } else {
+      url.searchParams.delete('paymentStatus')
+    }
+    window.location.href = url.href
+  })
+  // Hiển thị mặc định
+  const valueCurrent = url.searchParams.get('paymentStatus')
+  if(valueCurrent) {
+    filterPaymentStatus.value = valueCurrent
+  }
+}
 // End Filter status
 
 // Filter createdBy
@@ -1440,3 +1545,4 @@ if(search) {
   }
 }
 // End Search
+

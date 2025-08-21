@@ -8,6 +8,7 @@ const settingRoutes = require('./setting.route')
 const tourRoutes = require('./tour.route')
 const userRoutes = require('./user.route')
 const contactRoutes = require('./contact.route')
+const uploadRoutes = require('./upload.route')
 const auth = require('../../middleware/admin/auth.middleware')
 
 router.use('/account', accountRoutes)
@@ -19,5 +20,5 @@ router.use('/setting',  auth.verifyToken,  settingRoutes)
 router.use('/tour',  auth.verifyToken, tourRoutes)
 router.use('/user',  auth.verifyToken, userRoutes)
 router.use('/contact',  auth.verifyToken, contactRoutes)
-
+router.use('/upload', auth.verifyToken, uploadRoutes)
 module.exports = router
