@@ -68,9 +68,9 @@ block main
                       img(src=tour.avatar, alt="Tour Hạ Long")
                     .inner-content
                       .inner-name #{tour.name}
-                      .inner-quantity Người lớn: #{tour.quantityAdult} x #{tour.priceNewAdult}đ
-                      .inner-quantity Trẻ em: #{tour.quantityChildren} x #{tour.priceNewChildren}đ
-                      .inner-quantity Em bé: #{tour.quantityBaby} x #{tour.priceNewBaby}đ
+                      .inner-quantity Người lớn: #{tour.quantityAdult} x #{tour.priceNewAdult.toLocaleString('vi-VN')}đ
+                      .inner-quantity Trẻ em: #{tour.quantityChildren} x #{tour.priceNewChildren.toLocaleString('vi-VN')}đ
+                      .inner-quantity Em bé: #{tour.quantityBaby} x #{tour.priceNewBaby.toLocaleString('vi-VN')}đ
               td
                 div Tổng tiền: #{item.subTotal.toLocaleString('vi-VN')}đ
                 div Giảm: #{item.discount.toLocaleString('vi-VN')}đ

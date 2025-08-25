@@ -16,13 +16,13 @@ block main
         img(src="/admin/assets/images/section-1-icon-2.svg")
       .inner-content
         .inner-title Đơn hàng
-        .inner-number 3.600
+        .inner-number #{orderTotal.toLocaleString('vi-VN')}
     .inner-item
       .inner-icon
         img(src="/admin/assets/images/section-1-icon-3.svg")
       .inner-content
         .inner-title Doanh thu
-        .inner-number 300.000.000đ
+        .inner-number #{revenueTotal.toLocaleString('vi-VN')}đ
   //- End Section 1
 
   //- Section 2
@@ -52,40 +52,34 @@ block main
             th Trạng thái
             th.inner-text-right Ngày đặt
         tbody
-          tr
-            td
-              .inner-code OD000001
-            td
-              .inner-text Họ tên: Lê Văn A
-              .inner-text SĐT: 0123456789
-              .inner-text Ghi chú: Test...
-            td
-              .inner-item
-                .inner-image
-                  img(src="/admin/assets/images/tour-1.jpg", alt="Tour Hạ Long")
-                .inner-content
-                  .inner-name Tour Hạ Long
-                  .inner-quantity Người lớn: 3 x 1.500.000đ
-                  .inner-quantity Trẻ em: 2 x 1.300.000đ
-                  .inner-quantity Em bé: 2 x 1.000.000đ
-              .inner-item
-                .inner-image
-                  img(src="/admin/assets/images/tour-1.jpg", alt="Tour Hạ Long")
-                .inner-content
-                  .inner-name Tour Hạ Long
-                  .inner-quantity Người lớn: 3 x 1.500.000đ
-                  .inner-quantity Trẻ em: 2 x 1.300.000đ
-                  .inner-quantity Em bé: 2 x 1.000.000đ
-            td
-              .inner-text Tổng tiền: 10.000.000đ
-              .inner-text Giảm: 400.000đ
-              .inner-text Mã giảm: TOURMUAHE2024
-              .inner-text Thanh toán: 9.600.000đ
-              .inner-text PTTT: Ví Momo
-              .inner-text TTTT: Đã thanh toán
-            td
-              .badge.badge-orange Khởi tạo
-            td.inner-text-right
-              .inner-text 16:20
-              .inner-text 01/01/2024
+          each item in newestOrder
+            tr
+              td
+                .inner-code #{item.orderCode}
+              td
+                div Họ tên: #{item.fullName}
+                div SĐT: #{item.phone}
+                div Ghi chú: #{item.note}
+              td
+                each tour in item.items
+                  .inner-item
+                    .inner-image
+                      img(src=tour.avatar, alt="Tour Hạ Long")
+                    .inner-content
+                      .inner-name #{tour.name}
+                      .inner-quantity Người lớn: #{tour.quantityAdult} x #{tour.priceNewAdult.toLocaleString('vi-VN')}đ
+                      .inner-quantity Trẻ em: #{tour.quantityChildren} x #{tour.priceNewChildren.toLocaleString('vi-VN')}đ
+                      .inner-quantity Em bé: #{tour.quantityBaby} x #{tour.priceNewBaby.toLocaleString('vi-VN')}đ
+              td
+                div Tổng tiền: #{item.subTotal.toLocaleString('vi-VN')}đ
+                div Giảm: #{item.discount.toLocaleString('vi-VN')}đ
+                //- div Mã giảm: TOURMUAHE2024
+                div Thanh toán: #{item.total.toLocaleString('vi-VN')}đ
+                div PTTT: #{item.paymentMethodName}
+                div TTTT: #{item.paymentStatusName}
+              td
+                .badge.badge-orange #{item.statusName}
+              td(class="inner-center")
+                div #{item.hourCreatedFormat}
+                div #{item.dateCreatedFormat}
   //- End Section 3

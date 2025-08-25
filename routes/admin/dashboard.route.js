@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const dashboardController = require('../../controllers/admin/dashboard.controller')
-const auth = require('../../middleware/admin/auth.middleware')
 
-router.get('/', auth.verifyToken ,dashboardController.dashboard)
-
+router.get('/' ,dashboardController.dashboard)
+router.post('/revenue-chart', dashboardController.revenueChartPost)
 module.exports = router
