@@ -785,3 +785,205 @@ if(pageCart) {
   drawCart();
 }
 // End Page Cart
+
+// Active sort tour
+const sortTourList = document.querySelector('[sort-tour-list]')
+if(sortTourList) {
+  const url = new URL(window.location.href)
+  sortTourList.addEventListener('click', (e) => {
+    const targetValue = e.target.value
+    if(targetValue) {
+      url.searchParams.set('sort', targetValue)
+    } else {
+      url.searchParams.delete('sort')
+    }
+    window.location.href = url.href
+  })
+  const currentValue = document.querySelector(`button[value="${url.searchParams.get('sort')}"]`)
+  if(currentValue) {
+    const newSortTourList = document.querySelector('[sort-tour-list]')
+    const currentActive = newSortTourList.querySelector(".active")
+    if(currentActive) {
+      currentActive.classList.remove("active")
+    }
+    currentValue.classList.add('active')
+  }
+}
+// End active sort tour
+// Sorted
+// Active pagination
+const pagination = document.querySelector('[pagination]')
+if(pagination) {
+  const url = new URL(window.location.href)
+  pagination.addEventListener('click', (e) => {
+    const target = e.target.closest('button')
+    let targetValue = target.value
+    if(targetValue == 'first-page') {
+      targetValue = 1
+    } else if(targetValue == 'last-page') {  
+      targetValue = target.getAttribute('totalPage')
+    }
+    if(targetValue) {
+      url.searchParams.set('page', targetValue)
+    } else {
+      url.searchParams.delete('page')
+    }
+    window.location.href = url.href
+  })
+  const currentValue = document.querySelector(`button[value="${url.searchParams.get('page')}"]`)
+  if(currentValue) {
+    const newPagination = document.querySelector('[pagination]')
+    const currentActive = newPagination.querySelector(".active")
+    if(currentActive) {
+      currentActive.classList.remove("active")
+    }
+    currentValue.classList.add('active')
+  }
+}
+// End active pagination
+
+// Filter locations
+const filterLocaitons = document.querySelector('[filter-locations]')
+if(filterLocaitons) {
+  const url = new URL(window.location.href)
+  filterLocaitons.addEventListener('change', () => {
+    const value = filterLocaitons.value
+    if(value) {
+      url.searchParams.set('locations', value)
+    } else {
+      url.searchParams.delete('locations')
+    }
+    window.location.href = url.href
+  })
+  const valueCurrent = url.searchParams.get('locations')
+  if(valueCurrent) {
+    filterLocaitons.value = valueCurrent
+  }
+}
+// End filter locations
+
+// Filter departure
+const filterDeparture = document.querySelector('[filter-departure]')
+if(filterDeparture) {
+  const url = new URL(window.location.href)
+  filterDeparture.addEventListener('change', () => {
+    const value = filterDeparture.value
+    if(value) {
+      url.searchParams.set('departure', value)
+    } else {
+      url.searchParams.delete('departure')
+    }
+    window.location.href = url.href
+  })
+  const valueCurrent = url.searchParams.get('departure')
+  if(valueCurrent) {
+    filterDeparture.value = valueCurrent
+  }
+}
+// End Filter departure
+// Filter departureDate
+const filterDepartureDate = document.querySelector('[filter-departure-date]')
+if(filterDepartureDate) {
+  const url = new URL(window.location.href)
+  filterDepartureDate.addEventListener('change', () => {
+    const value = filterDepartureDate.value
+    if(value) {
+      url.searchParams.set('departureDate', value)
+    } else {
+      url.searchParams.delete('departureDate')
+    }
+    window.location.href = url.href
+  })
+  const valueCurrent = url.searchParams.get('departureDate')
+  if(valueCurrent) {
+    filterDepartureDate.value = valueCurrent
+  }
+}
+// End Filter departureDate
+// Filter stock adult
+const filterStockAdult = document.querySelector('[filter-stock-adult]')
+if(filterStockAdult) {
+  const url = new URL(window.location.href)
+  filterStockAdult.addEventListener('change', () => {
+    const value = filterStockAdult.value
+    if(value) {
+      url.searchParams.set('stockAdult', value)
+    } else {
+      url.searchParams.delete('stockAdult')
+    }
+    window.location.href = url.href
+  })
+  const valueCurrent = url.searchParams.get('stockAdult')
+  if(valueCurrent) {
+    filterStockAdult.value = valueCurrent
+  }
+}
+// End Filter stock adult
+// Filter stock children
+const filterStockChildren = document.querySelector('[filter-stock-children]')
+if(filterStockChildren) {
+  const url = new URL(window.location.href)
+  filterStockChildren.addEventListener('change', () => {
+    const value = filterStockChildren.value
+    if(value) {
+      url.searchParams.set('stockChildren', value)
+    } else {
+      url.searchParams.delete('stockChildren')
+    }
+    window.location.href = url.href
+  })
+  const valueCurrent = url.searchParams.get('stockChildren')
+  if(valueCurrent) {
+    filterStockChildren.value = valueCurrent
+  }
+}
+// End Filter stock children
+// Filter stock baby
+const filterStockBaby = document.querySelector('[filter-stock-baby]')
+if(filterStockBaby) {
+  const url = new URL(window.location.href)
+  filterStockBaby.addEventListener('change', () => {
+    const value = filterStockBaby.value
+    if(value) {
+      url.searchParams.set('stockBaby', value)
+    } else {
+      url.searchParams.delete('stockBaby')
+    }
+    window.location.href = url.href
+  })
+  const valueCurrent = url.searchParams.get('stockBaby')
+  if(valueCurrent) {
+    filterStockBaby.value = valueCurrent
+  }
+}
+// End Filter stock children
+// Filter price
+const filterPrice= document.querySelector('[filter-price]')
+if(filterPrice) {
+  const url = new URL(window.location.href)
+  filterPrice.addEventListener('change', () => {
+    const value = filterPrice.value
+    if(value) {
+      url.searchParams.set('price', value)
+    } else {
+      url.searchParams.delete('price')
+    }
+    window.location.href = url.href
+  })
+  const valueCurrent = url.searchParams.get('price')
+  if(valueCurrent) {
+    filterPrice.value = valueCurrent
+  }
+}
+// End Filter price
+
+// Reset filter
+const resetFilter = document.querySelector('[reset-filter]')
+if(resetFilter) {
+  const url = new URL(window.location.href)
+  resetFilter.addEventListener('click', () => {
+    url.search = ""
+    window.location.href = url.href
+  })
+}
+// End reset filter

@@ -20,7 +20,7 @@ module.exports.detail = async (req, res) => {
         title: tourDetail.name,
         list: [
           {
-            href: '/',
+            link: '/',
             title: "Trang chủ"
           }
         ]

@@ -1,6 +1,6 @@
 extends ../layouts/default.pug
 include ../mixins/breadcrumb.pug
-
+include ../mixins/product-item.pug
 block main
   +breadcrumb(breadcrumb)
   // Section 9
@@ -16,21 +16,19 @@ block main
             .inner-body
               .inner-group
                 .inner-label Điểm đi
-                select(name="")
+                select(name="" filter-locations)
                   option(value="") -- Chọn điểm đi --
-                  option(value="") Hà Nội
-                  option(value="") Đà Nẵng
-                  option(value="") Nha Trang
+                  each item in cityList 
+                    option(value=item.slug) #{item.name}
               .inner-group
                 .inner-label Điểm đến
-                select(name="")
+                select(name="" filter-departure)
                   option(value="") -- Chọn điểm đến --
-                  option(value="") Hà Nội
-                  option(value="") Đà Nẵng
-                  option(value="") Nha Trang
+                  each item in cityList 
+                    option(value=item.slug) #{item.name}
               .inner-group
                 .inner-label Ngày khởi hành
-                input(type="date")
+                input(type="date" filter-departure-date)
               .inner-group
                 .inner-label Số Lượng Hành Khách
                 .inner-input-list
@@ -39,201 +37,69 @@ block main
                     input(
                       value="0" 
                       type="number"
+                      filter-stock-adult
                       )
                   .inner-input-item
                     .inner-label Trẻ em:
                     input(
                       value="0" 
                       type="number"
+                      filter-stock-children
                       )
                   .inner-input-item
                     .inner-label Em bé:
                     input(
                       value="0" 
                       type="number"
+                      filter-stock-baby
                       )
               .inner-group
                 .inner-label Mức giá
-                select(name="")
+                select(name="" filter-price)
                   option(value="") -- Chọn khoảng giá --
-                  option(value="") Dưới 1tr
-                  option(value="") Từ 1tr đến 3tr
-                  option(value="") Từ 3tr đến 6tr
-                  option(value="") Từ 6tr đến 10tr
-                  option(value="") Trên 10tr
+                  each item in priceList 
+                    option(value=item.value) #{item.description}
               .inner-group
-                button.inner-button Áp Dụng
+                button.inner-button(reset-filter) Xóa bộ lọc
           .inner-overlay
           // End Box Filter
         .inner-right
           .inner-info
-            h2.inner-title Tour Nước Ngoài
+            h2.inner-title #{categoryDetail.name}
             .inner-desc
-              | Du lịch Châu Á: là châu lục lớn và đông dân nhất thế giới. Châu Á cũng có nhiều danh lam thắng cảnh đẹp tại một số quốc gia như Hàn Quốc, Nhật Bản, Trung Quốc, Việt Nam,... và VK Travel là nhà tổ chức du lịch chuyên nghiệp hàng đầu Châu Á, đã 5 lần liên tiếp nhận giải TTG Travel Awards. Hãy cùng 28.Travel du lịch Châu Á để tận hưởng những dịch vụ tốt nhất.
+              | !{categoryDetail.description}
           .inner-info-2
             .inner-sort
               .inner-label Sắp xếp:
-              .inner-list
-                button
+              .inner-list(sort-tour-list)
+                button(value='increasing-price')
                   | Giá tăng dần
                   i.fa-solid.fa-square-caret-up
-                button
+                button(value='decreasing-price')
                   | Giá giảm dần
                   i.fa-solid.fa-square-caret-down
-                button.active
+                button(value='high-discount').active
                   | Khuyến Mại Hot
                   i.fa-solid.fa-tag
-                button
+                button(value='most-viewed')
                   | Xem Nhiều
                   i.fa-solid.fa-eye
             .inner-count-record
-              | Tất cả:
-              b 101 Tour
+              | Tất cả: 
+              b #{tourList.length} Tour
             button.inner-filter-mobile
               span.inner-title Bộ Lọc
               i.fa-solid.fa-filter
           .inner-list-tour
-            // Product Item
-            .product-item
-              .inner-image
-                a(href="")
-                  img(
-                    alt="" 
-                    src="/assets/images/product-1.jpg"
-                    )
-              .inner-discount
-                i.fa-solid.fa-bolt
-                | Giảm -30%
-              .inner-content
-                h3.inner-title
-                  a(href="") Hà Nội - Lào Cai - SaPa 4N3Đ
-                .inner-prices
-                  .inner-price-old
-                    | 13.650.000
-                    span.inner-unit đ
-                  .inner-price-new
-                    | 2.590.000
-                    span.inner-unit đ
-                .inner-desc
-                  .inner-desc-item
-                    | Mã Tour:
-                    b 123456789
-                  .inner-desc-item
-                    | Ngày Khởi Hành:
-                    b 22/07/2024
-                  .inner-desc-item
-                    | Thời Gian:
-                    b 10 Ngày 9 Đêm
-                .inner-meta
-                  .inner-rating
-                    .inner-stars
-                      i.fa-solid.fa-star
-                      i.fa-solid.fa-star
-                      i.fa-solid.fa-star
-                      i.fa-solid.fa-star
-                      i.fa-solid.fa-star
-                    .inner-number (5)
-                  .inner-stock
-                    .inner-label Số chỗ còn:
-                    .inner-number 10
-            // End Product Item
-            // Product Item
-            .product-item
-              .inner-image
-                a(href="")
-                  img(
-                    alt="" 
-                    src="/assets/images/product-2.jpg"
-                    )
-              .inner-discount
-                i.fa-solid.fa-bolt
-                | Giảm -30%
-              .inner-content
-                h3.inner-title
-                  a(href="") Tour 2024 Phú Quốc - Thiên Đường Đảo Ngọc (3N2D)
-                .inner-prices
-                  .inner-price-old
-                    | 13.650.000
-                    span.inner-unit đ
-                  .inner-price-new
-                    | 2.590.000
-                    span.inner-unit đ
-                .inner-desc
-                  .inner-desc-item
-                    | Mã Tour:
-                    b 123456789
-                  .inner-desc-item
-                    | Ngày Khởi Hành:
-                    b 22/07/2024
-                  .inner-desc-item
-                    | Thời Gian:
-                    b 10 Ngày 9 Đêm
-                .inner-meta
-                  .inner-rating
-                    .inner-stars
-                      i.fa-solid.fa-star
-                      i.fa-solid.fa-star
-                      i.fa-solid.fa-star
-                      i.fa-solid.fa-star
-                      i.fa-solid.fa-star
-                    .inner-number (5)
-                  .inner-stock
-                    .inner-label Số chỗ còn:
-                    .inner-number 10
-            // End Product Item
-            // Product Item
-            .product-item
-              .inner-image
-                a(href="")
-                  img(
-                    alt="" 
-                    src="/assets/images/product-3.jpg"
-                    )
-              .inner-discount
-                i.fa-solid.fa-bolt
-                | Giảm -30%
-              .inner-content
-                h3.inner-title
-                  a(href="") Combo Đà Nẵng 2024: ĐÀ NẴNG - HỘI AN - BÀ NÀ HILL
-                .inner-prices
-                  .inner-price-old
-                    | 13.650.000
-                    span.inner-unit đ
-                  .inner-price-new
-                    | 2.590.000
-                    span.inner-unit đ
-                .inner-desc
-                  .inner-desc-item
-                    | Mã Tour:
-                    b 123456789
-                  .inner-desc-item
-                    | Ngày Khởi Hành:
-                    b 22/07/2024
-                  .inner-desc-item
-                    | Thời Gian:
-                    b 10 Ngày 9 Đêm
-                .inner-meta
-                  .inner-rating
-                    .inner-stars
-                      i.fa-solid.fa-star
-                      i.fa-solid.fa-star
-                      i.fa-solid.fa-star
-                      i.fa-solid.fa-star
-                      i.fa-solid.fa-star
-                    .inner-number (5)
-                  .inner-stock
-                    .inner-label Số chỗ còn:
-                    .inner-number 10
-            // End Product Item
+            each item in tourList 
+              +product-item(item)
           // Pagination
-          .box-pagination
-            button
+          .box-pagination(pagination)
+            button(value='first-page')
               i.fa-solid.fa-angles-left
-            button.active 1
-            button 2
-            button 3
-            button 4
-            button
+            -for(let i = 0; i<pagination.totalPage; i++)
+              button(class=(i==0?"active":"") value=i+1) #{i+1}
+            button(value='last-page' totalPage=pagination.totalPage)
               i.fa-solid.fa-angles-right
           // End Pagination
   // End Section 9

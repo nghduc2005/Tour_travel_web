@@ -46,7 +46,7 @@ module.exports.list = async (req, res) => {
   // Hết tìm kiếm
 
   // Phân trang
-  const limitItem = 5
+  const limitItem = 2
   let page = 1
   if(req.query.page) {
     const currentPage = req.query.page

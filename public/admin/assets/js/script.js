@@ -481,10 +481,13 @@ if(tourEditForm) {
       let avatar = null;
       if(avatars.length > 0) {
         avatar = avatars[0].file;
-        const elementImageDefault = event.target.avatar.closest("[image-default]");
-        const imageDefault = elementImageDefault.getAttribute("image-default");
-        if(imageDefault.includes(avatar.name)) {
-          avatar = null;
+        // const elementImageDefault = event.target.avatar.closest("[image-default]");
+        const elementImageDefault = event.target.closest("[image-default]");
+        if (elementImageDefault) {
+          const imageDefault = elementImageDefault.getAttribute("image-default") || "";
+          if (imageDefault.includes(avatar.name)) {
+            avatar = null;
+          }
         }
       }
       const priceAdult = event.target.priceAdult.value;
@@ -1606,4 +1609,3 @@ if(search) {
   }
 }
 // End Search
-
