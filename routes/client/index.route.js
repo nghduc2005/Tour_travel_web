@@ -17,5 +17,6 @@ router.use('/tour', tourRoutes)
 router.use('/category', categoryRoutes)
 router.use('/search', searchRoutes)
 router.use('/order', orderRoutes)
+router.use('/contact', contactRoutes)
 
 module.exports = router

@@ -1,3 +1,4 @@
+
 // Menu Mobile
 const buttonMenuMobile = document.querySelector(".header .inner-menu-mobile");
 if(buttonMenuMobile) {
@@ -987,3 +988,55 @@ if(resetFilter) {
   })
 }
 // End reset filter
+// Contact us submit
+const contactUsForm = document.querySelector('#contact-to-us')
+if(contactUsForm) {
+  const validation = new JustValidate('#contact-to-us');
+  validation
+    .addField('#fullName', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập họ và tên!'
+      }
+    ])
+    .addField('#email', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập email!'
+      }
+    ])
+    .addField('#content',[
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập email!'
+      }
+    ])
+    .onSuccess((event) => {
+      const fullName = event.target.fullName.value;
+      const email = event.target.email.value;
+      const content = event.target.content.value;
+      const dataFinal = {
+        fullName: fullName,
+        email: email,
+        content: content
+      }
+      fetch(`/contact/content`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code=='success') {
+          
+          window.location.reload()
+        }
+        if(data.code == 'error') {
+          alert(data.message)
+        }
+      })
+    })
+}
+// End contact us submit

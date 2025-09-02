@@ -1609,3 +1609,55 @@ if(search) {
   }
 }
 // End Search
+
+// Message reply form
+const messageReplyForm = document.querySelector('#message-reply-form')
+if(messageReplyForm) {
+  const validation = new JustValidate('#message-reply-form');
+  validation
+  .addField('#email', [
+    {
+      rule: 'required',
+      errorMessage: 'Vui lòng nhập email!'
+    },
+  ])
+  .addField('#title', [
+    {
+      rule: 'required',
+      errorMessage: 'Vui lòng nhập tiêu đề!'
+    },
+  ])
+  .addField('#content', [
+    {
+      rule: 'required',
+      errorMessage: 'Vui lòng nhập nội dung!'
+    },
+  ])
+  .onSuccess((event) => {
+    const email = event.target.email.value
+    const title = event.target.title.value
+    const content = event.target.content.value
+    const dataFinal = {
+      email: email,
+      title: title,
+      content: content
+    }
+    fetch(`/${pathAdmin}/messages/read/:id`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataFinal)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.code=="error") {
+        window.location.href = `/${pathAdmin}/messages/list`
+      }
+      if(data.code=="success") {
+        window.location.reload()
+      }
+    })
+  })
+}
+// End Message reply form

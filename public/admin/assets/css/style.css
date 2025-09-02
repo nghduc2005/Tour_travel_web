@@ -1127,6 +1127,10 @@ a {
   font-size: 12px;
 }
 
+.section-8 #message-detail-form {
+  margin-bottom: 20px;
+}
+
 .section-8 form .inner-group .inner-label {
   display: block;
   margin-bottom: 11px;

@@ -1,0 +1,32 @@
+extends ../layouts/default.pug
+
+
+block main
+  h1.box-title Chi tiết tin nhắn
+
+  .section-8
+    form#message-detail-form
+      .inner-group
+        label(class="inner-label" for="fullName") Họ tên
+        input(type="text" id="fullName" name="fullName" value = messagesDetail.fullName readonly)
+      .inner-group
+        label(class="inner-label" for="email") Email
+        input(type="text" id="email" name="email" value=messagesDetail.email readonly)
+      .inner-group.inner-two-col
+        label(class="inner-label" for="information") Nội dung tin nhắn
+        textarea(id="information" name="information" readonly) #{messagesDetail.content}
+    h2.box-title Gửi thư phản hồi
+    form#message-reply-form
+      .inner-group
+        label(class="inner-label" for="email") Địa chỉ người nhận
+        input(type="text" id="email" name="email" value=messagesDetail.email readonly)
+      .inner-group
+        label(class="inner-label" for="title") Tiêu đề
+        input(type="text" id="title" name="title")
+      .inner-group.inner-two-col
+        label(class="inner-label" for="content") Nội dung
+        textarea(id="content" textarea-mce name="content")
+      .inner-button.inner-two-col
+        button Gửi
+    .inner-back
+      a(href=`/${pathAdmin}/messages/list`) Quay lại danh sách

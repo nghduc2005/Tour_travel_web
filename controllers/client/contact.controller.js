@@ -1,4 +1,11 @@
 const Contact = require("../../models/contact.model")
+const Message = require("../../models/messages.model")
+
+module.exports.contact = (req, res) => {
+  res.render('client/pages/contact-us.pug', {
+    pageTitle: "Thông tin liên hệ"
+  })
+}
 
 module.exports.createPost = async (req, res) => {
   const { email } = req.body
@@ -20,3 +27,12 @@ module.exports.createPost = async (req, res) => {
 
 }
 
+module.exports.contentPost = async (req, res) => {
+  if(req.body) {
+    const newRecord = new Message(req.body)
+    await newRecord.save()
+  }
+  res.json( {
+    code: "success",
+  })
+}
