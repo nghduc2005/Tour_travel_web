@@ -3014,3 +3014,49 @@ input, button, textarea {
 .just-validate-error-label {
   display: none;
 }
+
+/* article */
+.article-block {
+  width: 100%;
+  height: 350px;
+  background-color: #ececec;
+  display: flex;
+  gap: 20px;
+  border-radius: 15px;
+  padding-inline: 35px;
+  padding-top: 35px;
+  padding-bottom: 35px;
+  margin-bottom: 40px;
+}
+.article-block .cover {
+  width: 40%;
+  height: 100%;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.article-block img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  object-position: center;
+}
+.article-block .short-description {
+  text-align: left;
+  flex: 1;
+  
+}
+.article-block .short-description h3{
+  font-size: 35px;
+  margin-top: 25px;
+}
+.article-block .short-description p {
+  font-size: 18px;
+  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* số dòng muốn hiển thị */
+  overflow: hidden;
+  margin: 0;
+}
+/* End article */

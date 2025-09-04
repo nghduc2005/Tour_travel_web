@@ -1040,3 +1040,14 @@ if(contactUsForm) {
     })
 }
 // End contact us submit
+
+// Article
+const articleList = document.querySelectorAll('.article-block')
+if(articleList) {
+  articleList.forEach(item => {
+    item.addEventListener("click", () => {
+      window.location.href = `/article/${item.getAttribute('key')}`
+    })
+  })
+}
+// End article

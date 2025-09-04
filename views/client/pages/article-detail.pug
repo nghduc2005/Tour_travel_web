@@ -1,0 +1,10 @@
+extends ../layouts/default.pug
+include ../mixins/product-item.pug
+block main
+  .section-4(style="padding-top: 60px;")
+    .container
+      h2.box-title #{pageTitle}
+      img(src=articleDetail.cover, alt="")
+      .content 
+        p #{articleDetail.createdAtFormat}
+        p !{articleDetail.content}

@@ -1,0 +1,23 @@
+extends ../layouts/default.pug
+include ../mixins/product-item.pug
+block main
+  .section-4(style="padding-top: 60px;")
+    .container
+      h2.box-title #{pageTitle}
+      each item in articleList
+        .article-block(key=item.slug)
+          .cover
+            img(src=item.cover, alt="")
+          .short-description
+            p #{item.createdAtFormat}
+            h3 #{item.title}
+            p !{item.content}
+      // Pagination
+      .box-pagination(pagination)
+        button(value='first-page')
+          i.fa-solid.fa-angles-left
+        -for(let i = 0; i<pagination.totalPage; i++)
+          button(class=(i==0?"active":"") value=i+1) #{i+1}
+        button(value='last-page' totalPage=pagination.totalPage)
+          i.fa-solid.fa-angles-right
+      // End Pagination

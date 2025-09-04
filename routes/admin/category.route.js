@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const categoryController = require('../../controllers/admin/category.controller')
-const cloudinaryHelper = require('../../helpers/cloudinary.helper')
 const categoryValidate = require('../../validates/admin/category.validate')
+const cloudinaryHelper = require('../../helpers/cloudinary.helper')
 const multer = require('multer')
 const upload = multer({storage: cloudinaryHelper.storage})
 

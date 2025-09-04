@@ -1661,3 +1661,123 @@ if(messageReplyForm) {
   })
 }
 // End Message reply form
+
+
+// Article create Form
+const articleCreateForm = document.querySelector("#article-create-form");
+if(articleCreateForm) {
+  const validation = new JustValidate('#article-create-form');
+
+  validation
+    .addField('#title', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập tiêu đề!'
+      }
+    ])
+    .addField('#author', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập tên tác giả!'
+      }
+    ])
+    .addField('#content', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập nội dung!'
+      }
+    ])
+    .onSuccess((event) => {
+      const title = event.target.title.value;
+      const author = event.target.author.value;
+      const covers = filePond.cover.getFiles();
+      let cover = null;
+      if(covers.length > 0) {
+        cover = covers[0].file;
+      }
+      const content = tinymce.get("content").getContent();
+      const formData = new FormData()
+      formData.append('title',title )
+      formData.append('author', author)
+      formData.append('cover', cover)
+      formData.append('content', content)
+      fetch(`/${pathAdmin}/article/create`, {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code=="success") {
+          console.log(data.message)
+          window.location.reload()
+        }
+        if(data.code=="error") {
+          alert(data.message)
+        }
+      })
+    })
+  ;
+}
+// End Article create Form
+// Article edit Form
+const articleEditForm = document.querySelector("#article-edit-form");
+if(articleEditForm) {
+  const validation = new JustValidate('#article-edit-form');
+
+  validation
+    .addField('#title', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập tiêu đề!'
+      }
+    ])
+    .addField('#author', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập tên tác giả!'
+      }
+    ])
+    .addField('#content', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập nội dung!'
+      }
+    ])
+    .onSuccess((event) => {
+      const id = event.target.id.value;
+      const title = event.target.title.value;
+      const author = event.target.author.value;
+      const covers = filePond.cover.getFiles();
+      let cover = null;
+      if(covers.length > 0) {
+        cover = covers[0].file;
+        const elementImageDefault = event.target.cover.closest("[image-default]");
+        const imageDefault = elementImageDefault.getAttribute("image-default");
+        if(imageDefault.includes(cover.name)) {
+          cover = null;
+        }
+      }
+      const content = tinymce.get("content").getContent();
+      const formData = new FormData()
+      formData.append('title',title )
+      formData.append('author', author)
+      formData.append('cover', cover)
+      formData.append('content', content)
+      fetch(`/${pathAdmin}/article/edit/${id}`, {
+        method: "PATCH",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code=="success") {
+          console.log(data.message)
+          window.location.reload()
+        }
+        if(data.code=="error") {
+          alert(data.message)
+        }
+      })
+    })
+  ;
+}
+// End Article create Form
