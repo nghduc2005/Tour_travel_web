@@ -6,6 +6,7 @@ const City = require("../../models/city.model");
 const moment = require('moment')
 const axios = require('axios').default;
 const CryptoJS = require('crypto-js');
+const Discount = require("../../models/discount.model");
 module.exports.createPost = async (req, res) => {
   try {
     req.body.orderCode = 'OD' + randomGenerateHelper.randomGenerate(10)
@@ -52,7 +53,17 @@ module.exports.createPost = async (req, res) => {
       return sum + ((item.priceNewAdult * item.quantityAdult) + (item.priceNewChildren * item.quantityChildren) + (item.priceNewBaby * item.quantityBaby))
     }, 0)
     // Giảm giá
-    req.body.discount = 0
+    const discountDetail = await Discount.findOne({
+      _id: req.body.coupon,
+      status: "active",
+      deleted: false
+    })
+    if(discountDetail) {
+      req.body.discount = req.body.subTotal*discountDetail/100 < discountDetail.maximum ? 
+                          req.body.subTotal*discountDetail/100: discountDetail.maximum
+    } else {
+      req.boyd.discount = 0
+    }
     // Giá phải trả
     req.body.total = req.body.subTotal - req.body.discount
     // Trạng thái thanh toán
@@ -67,6 +78,7 @@ module.exports.createPost = async (req, res) => {
       orderId: newRecord.id
     })
   } catch (error) {
+    console.log(error)
     res.json({
       code: "error",
       message: "Đặt hàng không thành công!"

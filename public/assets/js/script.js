@@ -389,6 +389,7 @@ if(couponForm) {
       .then(res => res.json())
       .then(data => {
         if(data.code=="success") {
+          sessionStorage.setItem('coupon', data.discount._id)
           drawCart(data.discount)
         }
         if(data.code=="error") {
@@ -453,12 +454,17 @@ if(orderForm) {
         }
       })
       if(cart.length>0) {
+        const coupon = sessionStorage.getItem('coupon')
+        if(coupon) {
+          sessionStorage.removeItem('coupon')
+        }
         const dataFinal = {
           fullName: fullName,
           phone: phone,
           note: note,
           paymentMethod: method,
           items: cart,
+          coupon: coupon? coupon: 0
         }
         fetch(`/order/create`, {
           method: "POST",
@@ -745,10 +751,13 @@ const drawCart = (discount=null) => {
             return sum
           }
         }, 0);
-        const discount = Math.floor(data.discount?.percent/100*subTotalPrice) > data.discount?.maximum ? 
-                        data.discount?.maximum : 
-                        Math.floor(data.discount?.percent/100*subTotalPrice)
-                        ;
+         
+        let discount 
+        if(sessionStorage.getItem('coupon')) {
+          discount = Math.floor(data.discount?.percent/100*subTotalPrice) > data.discount?.maximum ? 
+                          data.discount?.maximum : 
+                          Math.floor(data.discount?.percent/100*subTotalPrice)
+        }
         const totalPrice = subTotalPrice - (discount? discount: 0);
         
         const cartSubTotal = document.querySelector("[cart-sub-total]");
