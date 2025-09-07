@@ -1,4 +1,3 @@
-
 // Menu Mobile
 const buttonMenuMobile = document.querySelector(".header .inner-menu-mobile");
 if(buttonMenuMobile) {
@@ -377,7 +376,25 @@ if(couponForm) {
   validation
     .onSuccess((event) => {
       const coupon = event.target.coupon.value;
-      console.log(coupon);
+      const dataFinal = {
+        coupon: coupon
+      }
+      fetch(`/cart/coupon`, {
+        method:"POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code=="success") {
+          drawCart(data.discount)
+        }
+        if(data.code=="error") {
+          alert(data.message)
+        }
+      })
     })
   ;
 }
@@ -422,7 +439,7 @@ if(orderForm) {
       const note = event.target.note.value;
       const method = event.target.method.value;
 
-      let cart = JSON.parse(localStorage.getItem('cart'))
+      let cart = JSON.parse(localStorage.getItem('cart'))      
       cart = cart.filter((item) => {
         return item.checked == true && item.quantityAdult + item.quantityChildren + item.quantityBaby > 0
       })
@@ -441,7 +458,7 @@ if(orderForm) {
           phone: phone,
           note: note,
           paymentMethod: method,
-          items: cart
+          items: cart,
         }
         fetch(`/order/create`, {
           method: "POST",
@@ -594,20 +611,25 @@ if(miniCart) {
 // End Mini Cart
 
 // Page Cart
-const drawCart = () => {
-  const cart = localStorage.getItem("cart"); //backend không truy cập trực tiếp được
-
+const drawCart = (discount=null) => {
+  const cart = JSON.parse(localStorage.getItem("cart")); //backend không truy cập trực tiếp được
+  const dataFinal = {
+    cart: cart
+  }
+  if(discount) {
+    dataFinal.discount = discount
+  }
   fetch(`/cart/detail`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: cart
+    body: JSON.stringify(dataFinal)
   })
     .then(res => res.json())
     .then(data => {
       if(data.code == "success") {
-        // Hiển thị các item
+        //Hiển thị các item
         const htmlCart = data.cart.map(item => `
           <div class="inner-tour-item">
             <div class="inner-actions">
@@ -723,12 +745,16 @@ const drawCart = () => {
             return sum
           }
         }, 0);
-        const discount = 0;
-        const totalPrice = subTotalPrice - discount;
+        const discount = Math.floor(data.discount?.percent/100*subTotalPrice) > data.discount?.maximum ? 
+                        data.discount?.maximum : 
+                        Math.floor(data.discount?.percent/100*subTotalPrice)
+                        ;
+        const totalPrice = subTotalPrice - (discount? discount: 0);
         
         const cartSubTotal = document.querySelector("[cart-sub-total]");
         cartSubTotal.innerHTML = subTotalPrice.toLocaleString("vi-VN");
-
+        const discountScreen = document.querySelector("[cart-discount]");
+        discountScreen.innerHTML = discount? discount.toLocaleString("vi-VN") : 0;
         const cartTotal = document.querySelector("[cart-total]");
         cartTotal.innerHTML = totalPrice.toLocaleString("vi-VN");
         // Hết Tính tổng tiền
@@ -745,7 +771,7 @@ const drawCart = () => {
             const itemUpdate = cart.find(item => item.tourId == tourId);
             itemUpdate[name] = quantity;
             localStorage.setItem("cart", JSON.stringify(cart));
-            drawCart();
+            drawCart(data.discount);
           })
         })
         // Hết Sự kiện cập nhật số lượng
@@ -759,7 +785,7 @@ const drawCart = () => {
             const indexItemDelete = cart.findIndex(tour => tourId == tour.tourId)
             cart.splice(indexItemDelete, 1)
             localStorage.setItem("cart", JSON.stringify(cart))
-            drawCart()
+            drawCart(data.discount)
           })
         })
         // Hết sự kiện xóa

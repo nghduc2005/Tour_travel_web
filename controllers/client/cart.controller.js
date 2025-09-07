@@ -1,4 +1,6 @@
+const { json } = require("express")
 const City = require("../../models/city.model")
+const Discount = require("../../models/discount.model")
 const Tour = require("../../models/tour.model")
 const moment = require('moment')
 module.exports.cart = (req, res) => {
@@ -8,7 +10,7 @@ module.exports.cart = (req, res) => {
 }
 
 module.exports.detail = async (req, res) => {
-  const cart = req.body
+  let {cart, discount}= req.body
   for(const item of cart) {
     const tourInfo = await Tour.findOne({
       _id: item.tourId,
@@ -36,7 +38,35 @@ module.exports.detail = async (req, res) => {
   }
   res.json({
     code: "success",
-    cart: cart
+    cart: cart,
+    discount: discount
   })
 }
 
+
+module.exports.couponPost = async(req, res) => {
+  const {coupon} = req.body
+  const couponDetail = await Discount.findOne({
+    name: coupon,
+    deleted: false,
+    status: 'active'
+  })
+  if(couponDetail) {
+    if(Date.now() > couponDetail.endDate) {
+      res.json({
+        code:"error",
+        message: "Mã giảm giá đã hết hạn!"
+      })
+      return
+    }
+    res.json({
+      code:"success",
+      discount: couponDetail
+    })
+    return
+  }
+  res.json({
+    code:"error",
+    message: "Mã giảm giá không hợp lệ!"
+  })
+}

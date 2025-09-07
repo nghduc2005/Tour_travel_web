@@ -1,0 +1,34 @@
+extends ../layouts/default.pug
+include ../mixins/options.pug
+block main
+  h1.box-title #{pageTitle}
+
+  .section-8
+    form#discount-edit-form
+      .inner-group(style="display: none")
+        label(class="inner-label" for="id") Id
+        input(type="text" id="id" name="id" value=discountDetail.id)
+      .inner-group
+        label(class="inner-label" for="name") Tên mã giảm giá
+        input(type="text" id="name" name="name" value=discountDetail.name) 
+      .inner-group
+        label(class="inner-label" for="percent") Phần trăm giảm giá (0-100%)
+        input(type="text" id="percent" name="percent" value=discountDetail.percent)
+      .inner-group
+        label(class="inner-label" for="maximum") Lượng giảm tối đa (VND)
+        input(type="text" id="maximum" name="maximum" value=discountDetail.maximum)
+      .inner-group
+        label(class="inner-label" for="status") Trạng thái
+        select(id="status" name="status")
+          option(value="active" selected=discountDetail.status=="active"? true : false) Hoạt động
+          option(value="inactive" selected=discountDetail.status=="inactive"? true : false) Dừng hoạt động
+      .inner-group
+        label(class="inner-label" for="startDate") Ngày áp dụng
+        input(type="date" id="startDate" name="startDate" value=discountDetail.startDateFormat)
+      .inner-group
+        label(class="inner-label" for="endDate") Ngày hết hạn
+        input(type="date" id="endDate" name="endDate" value=discountDetail.endDateFormat)
+      .inner-button.inner-two-col
+        button Tạo mới
+    .inner-back
+      a(href=`/${pathAdmin}/discount/list`) Quay lại danh sách

@@ -1780,4 +1780,137 @@ if(articleEditForm) {
     })
   ;
 }
-// End Article create Form
+// End Article edit Form
+// Discount create form
+const discountCreateForm = document.querySelector("#discount-create-form");
+if(discountCreateForm) {
+  const validation = new JustValidate('#discount-create-form');
+
+  validation
+    .addField('#name', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập tên mã giảm giá!'
+      }
+    ])
+    .addField('#percent', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập phần trăm giảm giá!'
+      }
+    ])
+    .addField('#startDate', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập thời gian bắt đầu mã giảm giá!'
+      }
+    ])
+    .addField('#endDate', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập thời gian kết thúc mã giảm giá!'
+      }
+    ])
+    .onSuccess((event) => {
+      const name = event.target.name.value;
+      const percent = event.target.percent.value;
+      const maximum = event.target.maximum.value;
+      const startDate = event.target.startDate.value;
+      const endDate = event.target.endDate.value;
+      const status = event.target.status.value;
+      const dataFinal = {
+        name: name,
+        percent: percent,
+        maximum: maximum,
+        startDate: startDate,
+        endDate: endDate,
+        status: status
+      }
+      fetch(`/${pathAdmin}/discount/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataFinal)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code=="success") {
+          console.log(data.message)
+          window.location.reload()
+        }
+        if(data.code=="error") {
+          alert(data.message)
+        }
+      })
+    })
+  ;
+}
+// End discount create form
+// Discount edit form
+const discountEditForm = document.querySelector("#discount-edit-form");
+if(discountEditForm) {
+  const validation = new JustValidate('#discount-edit-form');
+
+  validation
+    .addField('#name', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập tên mã giảm giá!'
+      }
+    ])
+    .addField('#percent', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập phần trăm giảm giá!'
+      }
+    ])
+    .addField('#startDate', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập thời gian bắt đầu mã giảm giá!'
+      }
+    ])
+    .addField('#endDate', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập thời gian kết thúc mã giảm giá!'
+      }
+    ])
+    .onSuccess((event) => {
+      const id = event.target.id.value;
+      const name = event.target.name.value;
+      const percent = event.target.percent.value;
+      const maximum = event.target.maximum.value;
+      const startDate = event.target.startDate.value;
+      const endDate = event.target.endDate.value;
+      const status = event.target.status.value;
+      const dataFinal = {
+        name: name,
+        percent: percent,
+        maximum: maximum,
+        startDate: startDate,
+        endDate: endDate,
+        status: status
+      }
+      fetch(`/${pathAdmin}/discount/edit/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataFinal)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.code=="success") {
+          console.log(data.message)
+          window.location.reload()
+        }
+        if(data.code=="error") {
+          alert(data.message)
+        }
+      })
+    })
+  ;
+}
+// End discount edit form

@@ -4,7 +4,12 @@ block main
   .section-4(style="padding-top: 60px;")
     .container
       h2.box-title #{pageTitle}
-      img(src=articleDetail.cover, alt="")
+      img(src=articleDetail.cover alt="" class)
       .content 
         p #{articleDetail.createdAtFormat}
         p !{articleDetail.content}
+      p.more-content Xem thêm
+      ul
+        each item in articleSlugList
+          li 
+            a(href=`/article/${item.slug}`) #{item.title}

@@ -200,7 +200,7 @@ block main
           .swiper-slide
             +product-item(item)
       .inner-button
-        a.button-outline(href="#") Xem tất cả
+        a.button-outline(href='/category/tour-trong-nuoc') Xem tất cả
   // End Section 4
   // Section 5
   .section-5(
@@ -232,7 +232,7 @@ block main
           +product-item(item)
         // End Product Item
       .inner-button
-        a.button-outline(href="#") Xem tất cả
+        a.button-outline(href='/category/tour-nuoc-ngoai') Xem tất cả
   // End Section 6
   // Section 7
   .section-5(
@@ -260,55 +260,34 @@ block main
         data-aos="fade-up"
         )
         .blog-item
-          a(href="#")
+          a(href=`/article/${articleList[1].slug}`)
             .inner-image
               img(
                 alt="" 
-                src="/assets/images/blog-1.jpg"
+                src=articleList[1].cover
                 )
             .inner-content
-              .inner-date 23/05/2024
-              h3.inner-title Homestay “cổ tích” giữa Đà Lạt mộng mơ
+              .inner-date #{articleList[1].createdAtFormat}
+              h3.inner-title #{articleList[1].title}
         .blog-item-2
-          a(href="#")
+          a(href=`/article/${articleList[0].slug}`)
             .inner-image
               img(
                 alt="" 
-                src="/assets/images/blog-2.jpg"
+                src=articleList[0].cover
                 )
             .inner-content
-              .inner-date 23/05/2024
-              h3.inner-title Top 5 điểm check in độc đáo tại Singapore
-              .inner-desc
-                | Nếu bạn nghĩ du lịch Singapore rất nhàm chán vì chỉ mãi quanh quẩn trong những khối bê tông vô cảm thì bạn “chắc chưa?”. Tuy đảo quốc Sư Tử không phải là một quốc gia rộng lớn nhưng các địa điểm du lịch tại Singapore chưa từng đánh mất sức hút đối với cộng đồng xê dịch quốc tế.
-        .blog-item
-          a(href="#")
-            .inner-image
-              img(
-                alt="" 
-                src="/assets/images/blog-3.jpg"
-                )
-            .inner-content
-              .inner-date 23/05/2024
-              h3.inner-title Đặc sản không thể bỏ qua khi đến với Đà Nẵng - Hội An
-        .blog-item
-          a(href="#")
-            .inner-image
-              img(
-                alt="" 
-                src="/assets/images/blog-4.jpg"
-                )
-            .inner-content
-              .inner-date 23/05/2024
-              h3.inner-title Đảo Phú Quý Bình Thuận hot trend năm 2024
-        .blog-item
-          a(href="#")
-            .inner-image
-              img(
-                alt="" 
-                src="/assets/images/blog-5.jpg"
-                )
-            .inner-content
-              .inner-date 23/05/2024
-              h3.inner-title Trekking cắm trại tại Đà Lạt- Cảm nhận Đà Lạt qua từng bước chân
+              .inner-date #{articleList[0].createdAtFormat}
+              h3.inner-title #{articleList[0].title}
+        -for(let i = 2; i<5; i++)
+          .blog-item
+            a(href=`/article/${articleList[i].slug}`)
+              .inner-image
+                img(
+                  alt="" 
+                  src=articleList[i].cover
+                  )
+              .inner-content
+                .inner-date #{articleList[i].createdAtFormat}
+                h3.inner-title #{articleList[i].title}
   // End Section 8

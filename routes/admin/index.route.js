@@ -11,6 +11,7 @@ const contactRoutes = require('./contact.route')
 const uploadRoutes = require('./upload.route')
 const messagesRoutes = require('./message.route')
 const articleRoutes = require('./article.route')
+const discountRoutes = require('./discount.route')
 const auth = require('../../middleware/admin/auth.middleware')
 
 router.use('/account', accountRoutes)
@@ -25,4 +26,5 @@ router.use('/contact',  auth.verifyToken, contactRoutes)
 router.use('/upload', auth.verifyToken, uploadRoutes)
 router.use('/messages', auth.verifyToken, messagesRoutes)
 router.use('/article', auth.verifyToken, articleRoutes)
+router.use('/discount', auth.verifyToken, discountRoutes)
 module.exports = router

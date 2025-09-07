@@ -2,6 +2,7 @@ const Category = require('../../models/category.model')
 const Tour = require('../../models/tour.model')
 const moment = require('moment')
 const categoryHelper = require('../../helpers/category.helper')
+const Article = require('../../models/article.model')
 module.exports.home = async (req, res) => {
   const tourListSection2 = await Tour.find({
     deleted: false,
@@ -43,11 +44,24 @@ module.exports.home = async (req, res) => {
     item.departureDateFormat = moment(item.departureDate).format('DD/MM/YYYY')
     item.discount = parseInt((1-item.priceNewAdult/item.priceAdult)*100)
   }
+  const articleList = await Article.find({
+    deleted: false
+  })
+  .sort({
+    createdAt: 'desc'
+  })
+  .limit(5)
+  if(articleList) {
+    for(item of articleList) {
+      item.createdAtFormat = moment(item.createdAt).format('DD/MM/YYYY')
+    }
+  }
   res.render(`client/pages/home.pug`, {
     pageTitle: "Trang chủ",
     tourListSection2: tourListSection2,
     tourListSection4: tourListSection4,
     tourListSection6: tourListSection6,
+    articleList: articleList
   })
 }
 

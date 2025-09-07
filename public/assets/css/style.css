@@ -8,6 +8,10 @@
   box-sizing: border-box;
 }
 
+img {
+  width: 100%;
+}
+
 body {
   font-family: "Lexend Deca", sans-serif;
   margin: 0;
@@ -3050,13 +3054,12 @@ input, button, textarea {
   font-size: 35px;
   margin-top: 25px;
 }
-.article-block .short-description p {
-  font-size: 18px;
-  display: block;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3; /* số dòng muốn hiển thị */
-  overflow: hidden;
-  margin: 0;
+
+.content {
+  margin-top: 50px;
+}
+
+.more-content {
+  font-weight: bold;
 }
 /* End article */

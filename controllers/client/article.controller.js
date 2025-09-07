@@ -29,7 +29,10 @@ module.exports.list = async(req, res) => {
 
   // Kết thúc phân trang
   const articleList = await Article.find(find)
-  .sort('desc')
+  .sort({
+    createdAt:  'desc'
+  }
+  )
   .skip(pagination.skip)
   .limit(limitItem)
   if(articleList) {
@@ -49,10 +52,18 @@ module.exports.detail = async (req, res) => {
     slug: req.params.slug,
     deleted: false
   })
+  const articleSlugList = await Article.find({
+    deleted: false
+  })
+  .select('slug title')
+  .limit(3)
+  .sort({
+    createdAt: "desc"
+  })
   articleDetail.createdAtFormat = moment(articleDetail.createdAt).format("DD/MM/YYYY")
   res.render('client/pages/article-detail.pug', {
     pageTitle: articleDetail.title,
     articleDetail: articleDetail,
-    
+    articleSlugList: articleSlugList
   })
 }
