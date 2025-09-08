@@ -12,6 +12,13 @@ module.exports.list = (req, res) => {
 }
 
 module.exports.accountAdminChangeMulti = async (req, res) => {
+  if(!req.permissions.includes('account-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const {option, ids} = req.body
     switch(option) {
@@ -50,6 +57,13 @@ module.exports.accountAdminChangeMulti = async (req, res) => {
 }
 
 module.exports.roleChangeMulti = async (req, res) => {
+  if(!req.permissions.includes('role-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     if(req.body.ids.length > 0) {
       await Role.updateMany({
@@ -80,6 +94,10 @@ module.exports.roleChangeMulti = async (req, res) => {
 }
 
 module.exports.websiteInfo = async(req, res) => {
+  if(!req.permissions.includes('website-info-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const websiteInfo = await WebsiteInfo.findOne({});
   res.render('admin/pages/setting-website-info.pug', {
     pageTitle: "Thông tin website",
@@ -88,6 +106,20 @@ module.exports.websiteInfo = async(req, res) => {
 }
 
 module.exports.websiteInfoPatch = async (req, res) => {
+  if(!req.permissions.includes('website-info-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
+  if(!req.permissions.includes('website-info-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   if(req.files && req.files.logo) {
     req.body.logo = req.files.logo[0].path
   } else {
@@ -114,6 +146,10 @@ module.exports.websiteInfoPatch = async (req, res) => {
 }
 
 module.exports.accountAdmin = async (req, res) => {
+  if(!req.permissions.includes('account-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const find = {}
   // Pagination
   const limitItem = 2
@@ -198,6 +234,10 @@ module.exports.accountAdmin = async (req, res) => {
 }
 
 module.exports.accountAdminEdit = async (req, res) => {
+  if(!req.permissions.includes('account-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const id = req.params.id
   const accountAdminDetail = await AccountAdmin.findOne({
     _id: id
@@ -213,6 +253,10 @@ module.exports.accountAdminEdit = async (req, res) => {
 }
 
 module.exports.roleList = async (req, res) => {
+  if(!req.permissions.includes('role-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const find = {
     deleted: false
   }
@@ -231,7 +275,10 @@ module.exports.roleList = async (req, res) => {
 }
 
 module.exports.roleCreate = async (req, res) => {
-  
+  if(!req.permissions.includes('role-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   res.render('admin/pages/setting-role-create.pug', {
     pageTitle: "Tạo nhóm quyền",
     permissionList: permissionConfig.permissionList
@@ -239,6 +286,13 @@ module.exports.roleCreate = async (req, res) => {
 }
 
 module.exports.roleCreatePost = async (req, res) => {
+  if(!req.permissions.includes('role-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   req.createdBy = req.account.id
   req.updatedBy = req.account.id
 
@@ -251,6 +305,10 @@ module.exports.roleCreatePost = async (req, res) => {
 }
 
 module.exports.roleEdit = async (req, res) => {
+  if(!req.permissions.includes('account-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   try {
     
     const id = req.params.id
@@ -272,6 +330,13 @@ module.exports.roleEdit = async (req, res) => {
 }
 
 module.exports.roleEditPatch = async (req, res) => {
+  if(!req.permissions.includes('role-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const id = req.params.id
     await Role.updateOne({
@@ -290,6 +355,13 @@ module.exports.roleEditPatch = async (req, res) => {
 }
 
 module.exports.roleDeletePatch = async (req, res) => {
+  if(!req.permissions.includes('role-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const id = req.params.id
     await Role.updateOne({
@@ -311,6 +383,13 @@ module.exports.roleDeletePatch = async (req, res) => {
 }
 
 module.exports.accountAdminEditPatch = async (req, res) => {
+  if(!req.permissions.includes('account-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     if(req.file) {
       req.body.avatar = req.file.path
@@ -336,6 +415,10 @@ module.exports.accountAdminEditPatch = async (req, res) => {
 }
 
 module.exports.accountAdminCreate = async (req, res) => {
+  if(!req.permissions.includes('account-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const roleList = await Role.find({
     deleted: false
   })
@@ -346,6 +429,13 @@ module.exports.accountAdminCreate = async (req, res) => {
 }
 
 module.exports.accountAdminCreatePost = async (req, res) => {
+  if(!req.permissions.includes('account-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   const existAccount = await AccountAdmin.findOne({
     email: req.body.email
   })

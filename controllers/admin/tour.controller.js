@@ -7,6 +7,10 @@ const moment = require('moment')
 const slugify = require('slugify')
 const priceList = require('../../config/price.config')
 module.exports.list = async (req, res) => {
+  if(!req.permissions.includes('tour-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const find = {
     deleted: false
   }
@@ -123,6 +127,10 @@ module.exports.list = async (req, res) => {
 }
 
 module.exports.create = async(req, res) => {
+  if(!req.permissions.includes('tour-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const categoryList = await Category.find({
     deleted: false
   })
@@ -136,6 +144,13 @@ module.exports.create = async(req, res) => {
 }
 
 module.exports.createPost = async(req, res) => {
+  if(!req.permissions.includes('tour-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   if(!req.body.position) {
     const totalRecord = await Tour.countDocuments({})
     req.body.position = totalRecord + 1
@@ -178,6 +193,10 @@ module.exports.createPost = async(req, res) => {
 }
 
 module.exports.edit = async(req, res) => {
+  if(!req.permissions.includes('tour-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   try {
     const id = req.params.id
     const tourDetail = await Tour.findOne({
@@ -202,6 +221,13 @@ module.exports.edit = async(req, res) => {
 }
 
 module.exports.editPatch = async(req, res) => {
+  if(!req.permissions.includes('tour-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const id = req.params.id
     if(!req.body.position) {
@@ -253,6 +279,13 @@ module.exports.editPatch = async(req, res) => {
 }
 
 module.exports.deletePatch = async (req, res) => {
+  if(!req.permissions.includes('tour-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const id = req.params.id
     await Tour.updateOne({
@@ -275,6 +308,13 @@ module.exports.deletePatch = async (req, res) => {
 }
 
 module.exports.changeMultỉPatch = async (req, res) => {
+  if(!req.permissions.includes('tour-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const {option, ids} = req.body
     switch(option) {
@@ -329,6 +369,10 @@ module.exports.changeMultỉPatch = async (req, res) => {
 }
 
 module.exports.trash = async (req, res) => {
+  if(!req.permissions.includes('tour-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const find = {
     deleted: true
   }
@@ -404,6 +448,13 @@ module.exports.trash = async (req, res) => {
 }
 
 module.exports.trashUndoPatch = async (req, res) => {
+  if(!req.permissions.includes('tour-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const id = req.params.id
     await Tour.updateOne({
@@ -424,6 +475,13 @@ module.exports.trashUndoPatch = async (req, res) => {
 }
 
 module.exports.trashPermanentDelete = async (req, res) => {
+  if(!req.permissions.includes('tour-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const id = req.params.id
     await Tour.deleteOne({

@@ -1,6 +1,10 @@
 const Contact = require("../../models/contact.model")
 const moment = require('moment')
 module.exports.list = async (req, res) => {
+  if(!req.permissions.includes('contact-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const find = {
     deleted: false
   }
@@ -58,6 +62,13 @@ module.exports.list = async (req, res) => {
 }
 
 module.exports.delete = async (req, res) => {
+  if(!req.permissions.includes('contact-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   const id = req.params.id
   await Contact.updateOne({
     _id: id
@@ -72,6 +83,13 @@ module.exports.delete = async (req, res) => {
 }
 
 module.exports.changeMulti = async (req, res) => {
+  if(!req.permissions.includes('contact-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   const {option, ids} = req.body
   if(option) {
     await Contact.updateMany({

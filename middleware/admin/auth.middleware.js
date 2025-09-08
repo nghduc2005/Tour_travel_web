@@ -32,3 +32,20 @@ module.exports.verifyToken = async (req, res, next) => {
     res.redirect(`/${pathAdmin}/account/login`)
   }
 }
+
+module.exports.roleAuth = async (req, res, next) => {
+  try {
+    if(req.account.role) {
+      const roleDetail = await Role.findOne({
+        _id: req.account.role
+      })
+      if(!roleDetail) {
+        res.redirect(`/${pathAdmin}/account/login`)
+      }
+      req.permissions = roleDetail.permissions
+      next()
+    }
+  } catch (error) {
+    res.redirect(`/${pathAdmin}/account/login`)
+  }
+}

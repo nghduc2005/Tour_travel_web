@@ -22,6 +22,6 @@ block main
               input(type="checkbox" name="permissions" value=item.value checked=roleDetail.permissions.includes(item.value)? true: false)
               label #{item.label}
       .inner-button.inner-two-col
-        button Tạo mới
+        button Cập nhật
     .inner-back
       a(href=`/${pathAdmin}/setting/role/list`) Quay lại danh sách

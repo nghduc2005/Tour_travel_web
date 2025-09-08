@@ -88,10 +88,10 @@ module.exports.accountAdminPost = (req, res, next) => {
 }
 module.exports.rolePost = (req, res, next) => {
   const schema = Joi.object({
-    fullName: Joi.string().required().trim().strict().messages({
+    name: Joi.string().required().trim().strict().messages({
       "string.empty": "Vui lòng nhập họ và tên!"
     }),
-    desciption: Joi.string(),
+    description: Joi.string(),
     permissions: Joi.array().items(Joi.string()).required().min(1).messages({
       "array.min": "Vui lòng chọn ít nhất một quyền!",
     })

@@ -2,6 +2,10 @@ const Article = require("../../models/article.model")
 const moment = require('moment')
 const slugify = require('slugify')
 module.exports.list = async (req, res) => {
+  if(!req.permissions.includes('article-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const find = {
     deleted: false
   }
@@ -67,12 +71,23 @@ module.exports.list = async (req, res) => {
 }
 
 module.exports.create = (req, res) => {
+  if(!req.permissions.includes('article-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   res.render(`admin/pages/article-create.pug`, {
     pageTitle: "Tạo bài viết"
   })
 }
 
 module.exports.createPost = async (req, res) => {
+  if(!req.permissions.includes('article-view')) {
+    res.json({
+      code: "error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   if(req.body) {
     const {title, author, content} = req.body
     const cover = req.file? req.file.path: ''
@@ -97,6 +112,10 @@ module.exports.createPost = async (req, res) => {
 }
 
 module.exports.edit = async (req, res) => {
+  if(!req.permissions.includes('article-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   try {
     const id = req.params.id
     const articleDetail = await Article.findOne({
@@ -115,6 +134,13 @@ module.exports.edit = async (req, res) => {
 }
 
 module.exports.editPatch = async(req, res) => {
+  if(!req.permissions.includes('article-view')) {
+    res.json({
+      code: "error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const id = req.params.id
     if(req.file) {
@@ -139,6 +165,13 @@ module.exports.editPatch = async(req, res) => {
 }
 
 module.exports.articleChangeMulti = async (req, res) => {
+  if(!req.permissions.includes('article-view')) {
+    res.json({
+      code: "error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const {option, ids}  = req.body
     switch (option) {

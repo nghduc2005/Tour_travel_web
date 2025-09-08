@@ -3055,9 +3055,9 @@ input, button, textarea {
   margin-top: 25px;
 }
 
-.content {
-  margin-top: 50px;
-}
+/* .content {
+  margin-top: 0px;
+} */
 
 .more-content {
   font-weight: bold;

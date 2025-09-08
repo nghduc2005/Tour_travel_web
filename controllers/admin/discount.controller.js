@@ -1,6 +1,10 @@
 const Discount = require("../../models/discount.model")
 const moment = require('moment')
 module.exports.list = async (req, res) => {
+  if(!req.permissions.includes('discount-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const find = {
     deleted: false
   }
@@ -66,12 +70,23 @@ module.exports.list = async (req, res) => {
 }
 
 module.exports.create = (req, res) => {
+  if(!req.permissions.includes('discount-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   res.render(`admin/pages/discount-create.pug`, {
     pageTitle:"Tạo mã giảm giá"
   })
 }
 
 module.exports.createPost = async (req, res) => {
+  if(!req.permissions.includes('discount-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   if(req.body) {
     req.body.percent = parseInt(req.body.percent)
     req.body.maximum = parseInt(req.body.maximum) 
@@ -93,6 +108,10 @@ module.exports.createPost = async (req, res) => {
   })
 }
 module.exports.edit = async (req, res) => {
+  if(!req.permissions.includes('discount-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
     try {
       const discountDetail = await Discount.findOne({
         _id: req.params.id,
@@ -112,6 +131,13 @@ module.exports.edit = async (req, res) => {
     }
 }
 module.exports.editPatch = async (req, res) => {
+  if(!req.permissions.includes('discount-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     req.body.percent = parseInt(req.body.percent)
     req.body.maximum = parseInt(req.body.maximum) 
@@ -130,6 +156,13 @@ module.exports.editPatch = async (req, res) => {
 }
 
 module.exports.deletePatch = async (req, res) => {
+  if(!req.permissions.includes('discount-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const id = req.params.id
     await Discount.updateOne({
@@ -152,6 +185,13 @@ module.exports.deletePatch = async (req, res) => {
 }
 
 module.exports.changeMultiPatch = async (req, res) => {
+  if(!req.permissions.includes('discount-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const {option, ids}  = req.body
     switch (option) {

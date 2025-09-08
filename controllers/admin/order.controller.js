@@ -4,6 +4,10 @@ const moment = require('moment')
 const City = require("../../models/city.model")
 const Category = require("../../models/category.model")
 module.exports.list = async (req, res) => {
+  if(!req.permissions.includes('order-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const find = {
     deleted: false
   }
@@ -82,6 +86,10 @@ module.exports.list = async (req, res) => {
 }
 
 module.exports.edit = async (req, res) => {
+  if(!req.permissions.includes('order-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const id = req.params.id
   const orderDetail = await Order.findOne({
     _id: id,
@@ -105,6 +113,13 @@ module.exports.edit = async (req, res) => {
 }
 
 module.exports.editPatch = async (req, res) => {
+  if(!req.permissions.includes('order-view')) {
+    res.json({
+      code: "error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     req.body.updatedBy = req.account.id
     await Order.updateOne({
@@ -123,6 +138,13 @@ module.exports.editPatch = async (req, res) => {
 }
 
 module.exports.deletePatch = async (req, res) => {
+  if(!req.permissions.includes('order-view')) {
+    res.json({
+      code: "error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const id = req.params.id
     await Order.updateOne({

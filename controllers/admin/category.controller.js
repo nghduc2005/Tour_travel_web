@@ -5,6 +5,10 @@ const moment = require('moment')
 const slugify = require('slugify')
 
 module.exports.list = async (req, res) => {
+  if(!req.permissions.includes('category-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const find = {
     deleted: false
   }
@@ -106,6 +110,10 @@ module.exports.list = async (req, res) => {
 }
 
 module.exports.create = async (req, res) => {
+  if(!req.permissions.includes('category-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const categoryList = await Category.find({
     deleted: false,
   })
@@ -117,6 +125,13 @@ module.exports.create = async (req, res) => {
 }
 
 module.exports.createPost = async (req, res) => {
+  if(!req.permissions.includes('category-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   if(req.body.position) {
     req.body.position = parseInt(req.body.position)
   } else {
@@ -135,6 +150,10 @@ module.exports.createPost = async (req, res) => {
 }
 
 module.exports.edit = async (req, res) => {
+  if(!req.permissions.includes('category-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   try {
     const id = req.params.id
     const categoryList = await Category.find({
@@ -156,6 +175,13 @@ module.exports.edit = async (req, res) => {
 }
 
 module.exports.editPatch = async (req, res) => {
+  if(!req.permissions.includes('category-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const id = req.params.id
     if(req.body.position) {
@@ -186,6 +212,13 @@ module.exports.editPatch = async (req, res) => {
 }
 
 module.exports.deletePatch = async (req, res) => {
+  if(!req.permissions.includes('category-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const id = req.params.id
     await Category.updateOne({
@@ -208,6 +241,13 @@ module.exports.deletePatch = async (req, res) => {
 }
 
 module.exports.changeMultiPatch = async (req, res) => {
+  if(!req.permissions.includes('category-view')) {
+    res.json({
+      code:"error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const {option, ids}  = req.body
     switch (option) {

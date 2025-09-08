@@ -810,6 +810,7 @@ if(settingAccountAdminCreateForm) {
           avatar = null;
         }
       }
+      console.log(role)
       const formData = new FormData()
       formData.append("fullName", fullName);
       formData.append("email", email);

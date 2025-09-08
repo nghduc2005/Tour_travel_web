@@ -2,6 +2,10 @@ const { sendMail } = require("../../helpers/mail.helper")
 const Message = require("../../models/messages.model")
 const moment = require('moment')
 module.exports.messagesList = async (req, res) => {
+  if(!req.permissions.includes('message-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   const find = {
     deleted: false
   }
@@ -57,6 +61,10 @@ module.exports.messagesList = async (req, res) => {
 }
 
 module.exports.messagesRead = async(req, res) => {
+  if(!req.permissions.includes('message-view')) {
+    res.redirect(`/${pathAdmin}/dashboard`)
+    return
+  }
   try {
     const id = req.params.id
     const messagesDetail = await Message.findOne({
@@ -76,6 +84,13 @@ module.exports.messagesRead = async(req, res) => {
 }
 
 module.exports.messagesReadPost = async (req, res) => {
+  if(!req.permissions.includes('message-view')) {
+    res.json({
+      code: "error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const mailDetail = await Message.findOne({
       email: req.body.email
@@ -99,6 +114,13 @@ module.exports.messagesReadPost = async (req, res) => {
 }
 
 module.exports.messagesReadPatch = async (req, res) => {
+  if(!req.permissions.includes('message-view')) {
+    res.json({
+      code: "error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const id = req.params.id
     if(id) {
@@ -124,6 +146,13 @@ module.exports.messagesReadPatch = async (req, res) => {
 }
 
 module.exports.messagesChangeMulti = async (req, res) => {
+  if(!req.permissions.includes('message-view')) {
+    res.json({
+      code: "error",
+      message: "Bạn không có quyền truy cập nội dung này!"
+    })
+    return
+  }
   try {
     const {option, ids}  = req.body
     switch (option) {
